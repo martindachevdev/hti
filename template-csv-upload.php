@@ -8,7 +8,8 @@ if (!current_user_can('manage_options')) {
 }
 
 get_header();
-delete_all_products();
+// delete_all_products();
+
 /**
  * Display message helper function
  */
@@ -64,7 +65,7 @@ if (isset($_POST['submit']) && isset($_FILES['csv_file'])) {
 		// Perform import
 		if (!empty($products_group)) {
 			$import_stats = upload_products_from_csv($products_group);
-			// print_r($import_stats);
+ 
 			display_import_results($import_stats);
 		} else {
 			display_message('error', 'No valid products found in CSV file.');
@@ -91,7 +92,6 @@ if (isset($_POST['submit']) && isset($_FILES['csv_file'])) {
 			<li>Ед.мярка (Unit)</li>
 			<li>Артикулен код (SKU)</li>
 		</ul>
-		<p>Използвайте точка и запетая (;) като разделител.</p>
 	</div>
 
 	<form method="post" enctype="multipart/form-data">

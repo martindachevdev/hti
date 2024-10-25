@@ -1025,15 +1025,15 @@ function display_import_results($import_stats) {
     }
 
     // Show debug info if any
-    if (!empty($import_stats['debug'])) {
-        echo '<div class="notice notice-info is-dismissible">';
-        echo '<h3>Debug информация:</h3>';
-        echo '<pre style="background: #fff; padding: 10px; overflow: auto; max-height: 300px;">';
-        foreach ($import_stats['debug'] as $debug) {
-            echo htmlspecialchars($debug) . "\n";
-        }
-        echo '</pre></div>';
-    }
+    // if (!empty($import_stats['debug'])) {
+    //     echo '<div class="notice notice-info is-dismissible">';
+    //     echo '<h3>Debug информация:</h3>';
+    //     echo '<pre style="background: #fff; padding: 10px; overflow: auto; max-height: 300px;">';
+    //     foreach ($import_stats['debug'] as $debug) {
+    //         echo htmlspecialchars($debug) . "\n";
+    //     }
+    //     echo '</pre></div>';
+    // }
 
     echo '</div>';
 
