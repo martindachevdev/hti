@@ -1,0 +1,411 @@
+/*
+Theme Name:   	HTI Theme
+Theme URI:    	https://github.com/stuartduff/storefront-child-theme
+Author:       	Stuart Duff
+Author URI:     http://stuartduff.com
+Template:     	storefront
+Description:  	This is a blank child theme for WooThemes StoreFront theme
+Version:      	1.0.0
+License:      	GNU General Public License v2 or later
+License URI:  	http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:  	storefront
+Tags:         	black, white, light, two-columns, left-sidebar, right-sidebar, responsive-layout, custom-background, custom-colors, custom-header, custom-menu, featured-images, full-width-template, threaded-comments, accessibility-ready
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+Storefront is based on Underscores http://underscores.me/, (C) 2012-2014 Automattic, Inc.
+Resetting and rebuilding styles have been helped along thanks to the fine work of
+Eric Meyer http://meyerweb.com/eric/tools/css/reset/index.html
+along with Nicolas Gallagher and Jonathan Neal http://necolas.github.com/normalize.css/
+FontAwesome License: SIL Open Font License - http://scripts.sil.org/OFL
+Images License: GNU General Public License v2 or later
+*/
+/*
+ * Add your own custom css below this text.
+ */
+
+ .site-utils-cont {
+  display: flex;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+
+}
+
+.main-navigation ul li a {
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.main-navigation ul.sub-menu li a {
+  color: #333;
+}
+
+.site-header ul.menu li.current-menu-item>a {
+  color: white;
+  text-decoration: underline;
+}
+
+.main-navigation ul li:hover>a {
+  color: #fff;
+  opacity: 0.8;
+}
+
+.main-navigation ul.sub-menu li:hover>a {
+  color: #333;
+}
+
+header#masthead {
+  background: url(assets/img/hti-pattern-red-icons.png), linear-gradient(to top right, #6a0117, #d3012d);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+ul#site-header-cart li a {
+  color: white;
+}
+
+.site-header ul.sub-menu li.current-menu-item>a {
+  color: #333;
+}
+
+
+.brands.all-brands ul {
+  list-style: none;
+  display: block;
+  margin-left: -10px;
+  margin-right: -10px;
+}
+
+.brands.all-brands ul img {
+  height: 100px;
+  width: auto;
+}
+
+.brands.all-brands ul li {
+  display: inline-block;
+  margin: 5px 10px;
+}
+
+.brands.all-brands ul img {
+  height: 36px;
+}
+
+.hentry .entry-content h4 a {
+  text-decoration: none;
+}
+
+.hentry .entry-content h4 {
+  line-height: 1.2;
+  font-size: 22px;
+}
+
+a {
+  cursor: pointer !important;
+}
+
+.widget.woocommerce.widget_product_search {
+  display: none;
+}
+
+a:focus,
+button:focus,
+.button.alt:focus,
+input:focus,
+textarea:focus,
+input[type="button"]:focus,
+input[type="reset"]:focus,
+input[type="submit"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus,
+input[type="search"]:focus {
+  outline: none;
+}
+
+.home p {
+  font-size: 18px;
+  text-align: justify;
+}
+
+.home h1.entry-title {
+  font-size: 33px;
+  text-align: center;
+  margin-bottom: 55px;
+}
+
+.home .wp-block-buttons.is-content-justification-left.is-layout-flex.wp-container-core-buttons-is-layout-2.wp-block-buttons-is-layout-flex {
+  justify-content: center;
+}
+
+
+.site-utils-cont a {
+  color: #fff;
+  line-height: 42px;
+  display: block;
+  border: 1px solid;
+  margin-left: 10px;
+  padding: 0 10px;
+  border-radius: 2px;
+  font-weight: 600;
+}
+.footer-widgets > * {
+    margin-bottom: 30px;
+}
+ 
+.block.footer-widget-4 ul.wp-block-list li:before {
+    content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 1800 1800"><path fill="%23cf2e2f" d="M899.993 1556.267l441.512-441.511c8.202-7.819 26.127-26.384 26.893-27.184l.36-.383c110.946-118.997 172.046-274.141 172.046-436.851 0-353.342-287.463-640.805-640.803-640.805-353.342 0-640.805 287.463-640.805 640.805 0 162.714 61.1 317.857 172.038 436.851l468.759 469.078zm.008-1485.108c319.355 0 579.179 259.818 579.179 579.18 0 146.968-55.159 287.114-155.315 394.639-5.202 5.387-19.292 19.873-25.095 25.383L900.006 1469.1l-424.049-424.315C375.902 937.286 320.82 797.229 320.82 650.339c0-319.362 259.814-579.18 579.181-579.18z"/><path fill="%23cf2e2f" d="M998.745 225.279c110.577 0 325.781 120.91 325.781 342.553 0 17.018 13.789 30.812 30.812 30.812 17.014 0 30.812-13.794 30.812-30.812 0-115.37-50.989-222.331-143.563-301.184-73.464-62.566-169.175-102.994-243.842-102.994-17.014 0-30.812 13.794-30.812 30.813s13.798 30.812 30.812 30.812zm287.971 1135.777c-24.003-9.809-49.854-18.548-77.134-26.264l-50.474 50.478c148.765 35.502 240.488 98.79 240.488 157.599 0 87.962-205.171 185.974-499.596 185.974-294.417 0-499.597-98.012-499.597-185.974 0-58.805 91.723-122.097 240.488-157.599l-50.478-50.478c-27.271 7.716-53.126 16.455-77.121 26.264-112.537 45.995-174.513 110.563-174.513 181.813s61.977 135.817 174.513 181.813c103.793 42.422 241.128 65.785 386.708 65.785 145.582 0 282.921-23.363 386.715-65.785 112.536-45.995 174.504-110.563 174.504-181.813s-61.967-135.818-174.503-181.813z"/><path fill="%23cf2e2f" d="M901.771 945.221c-171.172 0-310.434-139.256-310.434-310.425S730.599 324.37 901.771 324.37c171.172 0 310.434 139.256 310.434 310.425s-139.262 310.426-310.434 310.426zm0-559.226c-137.193 0-248.809 111.612-248.809 248.801s111.616 248.801 248.809 248.801c137.192 0 248.809-111.612 248.809-248.801s-111.616-248.801-248.809-248.801z"/></svg>');
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+.footer-widgets .widget {
+    margin: 0;
+}
+
+.site-utils-cont a:first-child {
+  margin-left: 0;
+}
+
+
+.site-utils-cont svg {
+  fill: currentColor;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.site-utils-cont a.active,
+.site-utils-cont a:hover {
+  color: black;
+  border-color: white;
+  background: white;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.095), 0 6px 6px rgba(0, 0, 0, 0.115);
+}
+
+.site-utils-cont a.icon {
+  padding: 0;
+  width: 47px;
+  height: 47px;
+  font-size: 0;
+  text-align: center;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+a#site-search-toggle svg {
+  width: 27px;
+  height: auto;
+}
+
+
+.site-utils-cont a.txt {
+  padding: 0 1em;
+  font-size: 16px;
+  line-height: 45px;
+}
+
+.site-utils .search-form input {
+  position: relative;
+  display: block;
+  padding: 0.625em 2.5em 0.625em 0.625em;
+  background-color: #ffffff;
+  border: none;
+  color: #1a1a1a;
+  box-shadow: none;
+  border-radius: 2px;
+  margin: 0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.095), 0 6px 6px rgba(0, 0, 0, 0.115);
+  width: 100%;
+  margin-top: 20px;
+}
+
+.site-utils form button {
+  background: transparent;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  right: 0;
+  color: black;
+  padding: 9px 14px;
+  color: #d3012d;
+}
+
+form.search-form {
+  position: relative;
+}
+
+.site-utils form button svg {
+  width: 27px;
+  height: auto;
+  fill: #d3012d;
+}
+
+.home .wp-block-buttons.is-content-justification-left {
+  justify-content: center;
+}
+
+
+.site-branding {
+  display: flex !important;
+  justify-content: space-between;
+  width: 100% !important;
+}
+
+p.has-text-align-center a {
+  display: block;
+  text-align: center;
+}
+
+.hentry .entry-content .home-thumbs a {
+  text-decoration: none;
+  font-size: 21px;
+  line-height: 1.2;
+}
+
+.primary-navigation {
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.site-info {
+  display: none;
+}
+
+.site-footer {
+  background: #e5e6e6;
+  border-top: 0.5em solid #d3012d;
+}
+
+.footer-widgets {
+  padding-top: 20px;
+}
+
+.site-footer {
+  padding-bottom: 10px;
+}
+
+.footer-widgets {
+  border: none;
+}
+
+.site-footer h1,
+.site-footer h2,
+.site-footer h3,
+.site-footer h4,
+.site-footer h5,
+.site-footer h6,
+.site-footer .widget .widget-title,
+.site-footer .widget .widgettitle,
+.block.footer-widget-4>div:first-child p {
+  color: #000;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  position: relative;
+  padding-bottom: 0;
+  padding-bottom: 2rem;
+  margin-bottom: 0;
+}
+
+
+span.gamma.widget-title:after,
+.block.footer-widget-4>div:first-child p:after {
+  content: "";
+  position: absolute;
+  width: 2rem;
+  height: 2px;
+  background: #d3012d;
+  bottom: 1rem;
+  left: 0;
+}
+
+.footer-widgets .widget_nav_menu ul li::before {
+  display: none;
+}
+
+.footer-widgets .widget_nav_menu ul li a {
+  text-decoration: none;
+}
+
+.footer-widgets .widget_nav_menu ul li {
+  padding-left: 0;
+  margin-bottom: 0.5rem;
+  font-size: 18px;
+}
+
+.wp-block-social-links .wp-social-link svg {
+  height: 38px;
+  width: auto;
+}
+
+.block.footer-widget-4 .widget_block.widget_text {
+  margin-bottom: 0;
+}
+
+ul.wp-block-social-links.has-icon-color.is-style-logos-only.is-layout-flex.wp-block-social-links-is-layout-flex {
+  gap: 10px;
+}
+
+ul#menu-header-main-menu {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+
+
+
+
+  .site-header .site-branding img {
+    height: 69px;
+    max-width: none;
+    max-height: none
+  }
+
+  .main-navigation ul.menu>li.menu-item-has-children>a::after,
+  .main-navigation ul.menu>li.page_item_has_children>a::after,
+  .main-navigation ul.nav-menu>li.menu-item-has-children>a::after,
+  .main-navigation ul.nav-menu>li.page_item_has_children>a::after {
+    margin-left: 7px;
+  }
+
+
+  .woocommerce-active .site-header .main-navigation {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  ul#menu-main-menu {
+    text-align: center;
+  }
+}
+
+@media (min-width: 1450px) {
+  .col-full {
+    max-width: 100%;
+    width: 1356px;
+  }
+
+  .primary-navigation a {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1170px) {
+
+  .main-navigation ul.menu,
+  .main-navigation ul.nav-menu {
+    margin-left: 0;
+    margin-right: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .main-navigation ul.menu>li>a,
+  .main-navigation ul.nav-menu>li>a {
+    padding: 1.618em 0;
+  }
+}
