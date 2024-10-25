@@ -998,24 +998,113 @@ function display_message($type, $message)
     echo "<div class='$class'><p>$message</p></div>";
 }
 
-function display_import_results($import_stats)
-{
+function display_import_results($import_stats) {
     echo '<div class="wrap">';
     echo '<h2>Резултати от импорта</h2>';
 
-    echo '<div class="notice"><p>Импортът е завършен:<br>';
-    echo 'Създадени продукти: ' . $import_stats['products_created'] . '<br>';
-    echo 'Обновени продукти: ' . $import_stats['products_updated'] . '<br>';
-    echo 'Създадени вариации: ' . $import_stats['variations_created'] . '<br>';
-    echo 'Обновени вариации: ' . $import_stats['variations_updated'] . '<br>';
-    echo 'Пропуснати: ' . $import_stats['skipped'] . '</p></div>';
+    // Show stats
+    echo '<div class="notice notice-success"><p>';
+    echo '<strong>Импортът е завършен:</strong><br>';
+    echo '<ul style="list-style-type: disc; margin-left: 20px;">';
+    echo '<li>Създадени продукти: ' . $import_stats['products_created'] . '</li>';
+    echo '<li>Обновени продукти: ' . $import_stats['products_updated'] . '</li>';
+    echo '<li>Създадени вариации: ' . $import_stats['variations_created'] . '</li>';
+    echo '<li>Обновени вариации: ' . $import_stats['variations_updated'] . '</li>';
+    echo '<li>Пропуснати: ' . $import_stats['skipped'] . '</li>';
+    echo '</ul></p></div>';
 
+    // Show errors if any
     if (!empty($import_stats['errors'])) {
-        echo '<div class="notice error"><h3>Грешки:</h3><pre>';
-        echo implode("\n", $import_stats['errors']);
+        echo '<div class="notice notice-error">';
+        echo '<h3>Грешки:</h3>';
+        echo '<pre style="background: #fff; padding: 10px; overflow: auto; max-height: 300px;">';
+        foreach ($import_stats['errors'] as $error) {
+            echo htmlspecialchars($error) . "\n";
+        }
+        echo '</pre></div>';
+    }
+
+    // Show debug info if any
+    if (!empty($import_stats['debug'])) {
+        echo '<div class="notice notice-info is-dismissible">';
+        echo '<h3>Debug информация:</h3>';
+        echo '<pre style="background: #fff; padding: 10px; overflow: auto; max-height: 300px;">';
+        foreach ($import_stats['debug'] as $debug) {
+            echo htmlspecialchars($debug) . "\n";
+        }
         echo '</pre></div>';
     }
 
     echo '</div>';
+
+    // Add some basic styling
+    echo '<style>
+        .wrap .notice { margin: 10px 0; padding: 10px; }
+        .wrap .notice h3 { margin-top: 0; }
+        .wrap .notice pre { margin: 0; }
+        .wrap ul { margin-bottom: 0; }
+    </style>';
 }
- 
+
+
+// Helper function to return 'instock'
+function return_instock() {
+    return 'instock';
+}
+
+// Force all products to be in stock and purchasable
+add_filter('woocommerce_product_is_in_stock', '__return_true');
+add_filter('woocommerce_product_backorders_allowed', '__return_true');
+add_filter('woocommerce_product_is_purchasable', '__return_true');
+add_filter('woocommerce_variation_is_purchasable', '__return_true');
+
+// Hide stock management fields
+add_filter('woocommerce_product_data_tabs', function($tabs) {
+    unset($tabs['inventory']);
+    return $tabs;
+});
+
+// Disable stock management globally
+add_filter('pre_option_woocommerce_manage_stock', function() {
+    return 'no';
+});
+
+// Force stock status to be "in stock"
+add_filter('woocommerce_product_get_stock_status', 'return_instock', 100);
+add_filter('woocommerce_product_variation_get_stock_status', 'return_instock', 100);
+add_filter('woocommerce_variation_get_stock_status', 'return_instock', 100);
+
+// Override availability text
+add_filter('woocommerce_get_availability', function($availability, $product) {
+    return array(
+        'availability' => '',
+        'class'        => 'in-stock',
+    );
+}, 100, 2);
+
+// Remove "out of stock" message
+add_filter('woocommerce_get_availability_text', '__return_empty_string', 100);
+
+// Always allow adding to cart
+add_filter('woocommerce_variation_is_active', '__return_true');
+add_filter('woocommerce_variation_is_visible', '__return_true');
+
+// Remove stock validation
+add_filter('woocommerce_update_cart_validation', '__return_true', 10, 4);
+
+// Force variations to be purchasable
+add_filter('woocommerce_available_variation', function($variation_data, $product, $variation) {
+    $variation_data['is_in_stock'] = true;
+    $variation_data['is_purchasable'] = true;
+    $variation_data['max_qty'] = '';
+    $variation_data['stock_status'] = 'instock';
+    unset($variation_data['availability_html']);
+    return $variation_data;
+}, 10, 3);
+
+// Make sure all variations are shown as in stock in admin
+add_action('woocommerce_product_after_variable_attributes', function($loop, $variation_data, $variation) {
+    if ($variation) {
+        update_post_meta($variation->ID, '_stock_status', 'instock');
+    }
+}, 10, 3);
