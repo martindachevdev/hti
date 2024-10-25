@@ -18,7 +18,7 @@ delete_all_products();
  * Display import results
  */
 
- $import_stats = array();
+ 
 // Process form submission
 if (isset($_POST['submit']) && isset($_FILES['csv_file'])) {
 	// Verify nonce
@@ -63,7 +63,8 @@ if (isset($_POST['submit']) && isset($_FILES['csv_file'])) {
 
 		// Perform import
 		if (!empty($products_group)) {
-			$import_stats = upload_products_from_csv($products_group, $import_stats);
+			$import_stats = upload_products_from_csv($products_group);
+			// print_r($import_stats);
 			display_import_results($import_stats);
 		} else {
 			display_message('error', 'No valid products found in CSV file.');
