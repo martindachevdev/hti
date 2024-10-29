@@ -13,7 +13,13 @@
 	</div><!-- #content -->
 
 	<?php do_action( 'storefront_before_footer' ); ?>
-
+	<?php
+	
+	// if(is_woocommerce()){
+		// echo '<button class="toggle-cart floating-toggle-cart">Изпрати запитване</button>';
+	// }
+	
+	?>
 	<footer id="colophon" class="site-footer" role="contentinfo">
 		<div class="col-full">
 
@@ -38,12 +44,12 @@
 <script>
 	jQuery(document).ready(function($) {
         $('.variations_form').on('found_variation', function(event, variation) {
-			console.log(variation);
             if (variation.sku) {
                 $('.product_meta .sku').text(variation.sku);
             }
         });
     });
-</script>
+
+</script> 
 </body>
 </html>

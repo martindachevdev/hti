@@ -16,6 +16,8 @@
  */
 
 require 'inc/product-importer.php';
+require 'inc/woo-system-1.php';
+require 'inc/woo-system-2.php';
 
 function sf_child_theme_dequeue_style()
 {
@@ -1108,3 +1110,28 @@ add_action('woocommerce_product_after_variable_attributes', function($loop, $var
         update_post_meta($variation->ID, '_stock_status', 'instock');
     }
 }, 10, 3);
+
+
+add_action('init', 'add_editor_woo_caps');
+
+function add_editor_woo_caps() {
+    $role = get_role('editor');
+    $role->add_cap('edit_products');
+    $role->add_cap('edit_published_products');
+    $role->add_cap('edit_others_products');
+    $role->add_cap('read_products');
+
+    // Order capabilities
+    $role->add_cap('edit_shop_orders');
+    $role->add_cap('read_shop_orders');
+    $role->add_cap('edit_shop_order');
+    $role->add_cap('edit_others_shop_orders');
+    $role->add_cap('publish_shop_orders');
+    $role->add_cap('read_private_shop_orders');
+    $role->add_cap('edit_private_shop_orders');
+    
+    // General WooCommerce
+    $role->add_cap('read_private_products');
+    $role->add_cap('view_woocommerce_reports');
+    // $role->add_cap('manage_woocommerce'); 
+}

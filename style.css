@@ -409,3 +409,11 @@ ul#menu-header-main-menu {
     padding: 1.618em 0;
   }
 }
+
+.floating-toggle-cart {
+  position: fixed;
+  z-index: 9999;
+  right: 0;
+  bottom: 30px;
+  right: 30px;
+}
