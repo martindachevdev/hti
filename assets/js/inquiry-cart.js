@@ -28,8 +28,11 @@
         },
 
         bindEvents() {
+            $('body').on('click', '.close-cart', function() {
+               self.toggleCart();
+            });
             const self = this;
-
+            
              // Toggle cart button click
              $(document).on('click', this.selectors.toggleBtn, function (e) {
                 const $target = $(e.target);

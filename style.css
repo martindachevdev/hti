@@ -312,8 +312,7 @@ p.has-text-align-center a {
 }
 
 
-span.gamma.widget-title:after,
-.block.footer-widget-4>div:first-child p:after {
+.footer-widgets span.gamma.widget-title:after, .block.footer-widget-4>div:first-child p:after {
   content: "";
   position: absolute;
   width: 2rem;
@@ -416,4 +415,20 @@ ul#menu-header-main-menu {
   right: 0;
   bottom: 30px;
   right: 30px;
+}
+
+span.cart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(28deg);
+  margin-left: -5px;
+}
+
+.header-cart-toggle button.toggle-cart {
+  color: #333333;
+}
+
+.cart-header button.toggle-cart {
+  color: #333333;
 }

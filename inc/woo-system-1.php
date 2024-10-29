@@ -99,10 +99,10 @@ function theme_enqueue_inquiry_cart_assets() {
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('theme-inquiry-cart'),
         'i18n' => array(
-            'successMessage' => __('Your inquiry has been submitted successfully!', 'your-theme-textdomain'),
-            'errorMessage' => __('An error occurred. Please try again.', 'your-theme-textdomain'),
-            'removeItemConfirm' => __('Are you sure you want to remove this item?', 'your-theme-textdomain'),
-            'confirmSubmit' => __('Are you sure you want to submit this inquiry?', 'your-theme-textdomain')
+            'successMessage' => __('Вашето запитване е изпратено успешно!', 'your-theme-textdomain'),
+            'errorMessage' => __('Грешка при изпращане на запитването. Моля, опитайте отново.', 'your-theme-textdomain'),
+            'removeItemConfirm' => __('Сигурни ли сте, че искате да премахнете този продукт?', 'your-theme-textdomain'),
+            'confirmSubmit' => __('Сигурни ли сте, че искате да изпратите това запитване?', 'your-theme-textdomain')
         )
     ));
 

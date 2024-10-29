@@ -10,7 +10,11 @@ function theme_add_cart_toggle_button() {
     $count = WC()->cart->get_cart_contents_count();
     ?>
     <button class="header-cart-toggle toggle-cart">
-        <span class="cart-icon">🛒</span>
+        <span class="cart-icon">
+        <svg width="30px" height="auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 2L2 8.66667L11.5833 12.4167M22 2L15.3333 22L11.5833 12.4167M22 2L11.5833 12.4167" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+        </span>
         <?php if ($count > 0) : ?>
             <span class="cart-count"><?php echo esc_html($count); ?></span>
         <?php endif; ?>
@@ -30,8 +34,8 @@ function theme_render_inquiry_cart() {
     ?>
     <div id="floating-inquiry-cart" class="floating-cart">
         <div class="cart-header">
-            <h3><?php esc_html_e('Inquiry Cart', 'your-theme-textdomain'); ?></h3>
-            <button class="toggle-cart" aria-label="<?php esc_attr_e('Close cart', 'your-theme-textdomain'); ?>">&times;</button>
+            <h3><?php esc_html_e('Моето запитване', 'your-theme-textdomain'); ?></h3>
+            <button class="toggle-cart close-cart" aria-label="<?php esc_attr_e('Затвори', 'your-theme-textdomain'); ?>">&times;</button>
         </div>
 
         <?php if ($cart->is_empty()) : ?>
@@ -39,7 +43,7 @@ function theme_render_inquiry_cart() {
                 <?php
                 printf(
                     /* translators: %s: shop catalog URL */
-                    esc_html__('Browse our %scatalog%s to add items for inquiry.', 'your-theme-textdomain'),
+                    esc_html__('Разгледайте нашия %sкаталог%s, за да добавите продукти за запитване.', 'your-theme-textdomain'),
                     '<a href="' . esc_url(get_permalink(wc_get_page_id('shop'))) . '">',
                     '</a>'
                 );
@@ -96,17 +100,17 @@ function theme_render_inquiry_cart() {
                                 </h4>
                                 
                                 <div class="quantity">
-                                    <button type="button" class="quantity-btn minus" aria-label="<?php esc_attr_e('Decrease quantity', 'your-theme-textdomain'); ?>">-</button>
+                                    <button type="button" class="quantity-btn minus" aria-label="<?php esc_attr_e('Намали количеството', 'your-theme-textdomain'); ?>">-</button>
                                     <input type="number" 
                                         value="<?php echo esc_attr($cart_item['quantity']); ?>" 
                                         min="1" 
-                                        aria-label="<?php esc_attr_e('Product quantity', 'your-theme-textdomain'); ?>"
+                                        aria-label="<?php esc_attr_e('Количество на продукта', 'your-theme-textdomain'); ?>"
                                     >
-                                    <button type="button" class="quantity-btn plus" aria-label="<?php esc_attr_e('Increase quantity', 'your-theme-textdomain'); ?>">+</button>
+                                    <button type="button" class="quantity-btn plus" aria-label="<?php esc_attr_e('Увеличи количеството', 'your-theme-textdomain'); ?>">+</button>
                                 </div>
                             </div>
                             
-                            <button type="button" class="remove-item" aria-label="<?php esc_attr_e('Remove item', 'your-theme-textdomain'); ?>">&times;</button>
+                            <button type="button" class="remove-item" aria-label="<?php esc_attr_e('Премахни продукта', 'your-theme-textdomain'); ?>">&times;</button>
                         </div>
                         <?php
                     }
@@ -116,7 +120,7 @@ function theme_render_inquiry_cart() {
             
             <div class="cart-footer">
                 <button type="button" id="submit-inquiry" class="button alt">
-                    <?php esc_html_e('Submit Inquiry', 'your-theme-textdomain'); ?>
+                    <?php esc_html_e('Изпрати запитване', 'your-theme-textdomain'); ?>
                 </button>
             </div>
         <?php endif; ?>
