@@ -432,3 +432,28 @@ span.cart-icon {
 .cart-header button.toggle-cart {
   color: #333333;
 }
+
+.woocommerce-orders h1 {
+  display: none;
+}
+
+nav.woocommerce-MyAccount-navigation {
+  display: none;
+}
+
+.woocommerce-MyAccount-content {
+  width: 100%;
+}
+
+table.woocommerce-orders-table.woocommerce-MyAccount-orders.shop_table.shop_table_responsive .product-image {
+  width: 60px;
+  margin-right: 15px;
+}
+
+.woocommerce-MyAccount-content .inquiry-product {
+  display: flex;
+}
+
+.woocommerce-MyAccount-content .product-info {
+  flex: 1;
+}

@@ -34,8 +34,8 @@ function theme_render_inquiry_cart() {
     ?>
     <div id="floating-inquiry-cart" class="floating-cart">
         <div class="cart-header">
-            <h3><?php esc_html_e('Моето запитване', 'your-theme-textdomain'); ?></h3>
-            <button class="toggle-cart close-cart" aria-label="<?php esc_attr_e('Затвори', 'your-theme-textdomain'); ?>">&times;</button>
+            <h3><?php esc_html_e('Моето запитване', 'storefront'); ?></h3>
+            <button class="toggle-cart close-cart" aria-label="<?php esc_attr_e('Затвори', 'storefront'); ?>">&times;</button>
         </div>
 
         <?php if ($cart->is_empty()) : ?>
@@ -43,7 +43,7 @@ function theme_render_inquiry_cart() {
                 <?php
                 printf(
                     /* translators: %s: shop catalog URL */
-                    esc_html__('Разгледайте нашия %sкаталог%s, за да добавите продукти за запитване.', 'your-theme-textdomain'),
+                    esc_html__('Разгледайте нашия %sкаталог%s, за да добавите продукти за запитване.', 'storefront'),
                     '<a href="' . esc_url(get_permalink(wc_get_page_id('shop'))) . '">',
                     '</a>'
                 );
@@ -100,17 +100,17 @@ function theme_render_inquiry_cart() {
                                 </h4>
                                 
                                 <div class="quantity">
-                                    <button type="button" class="quantity-btn minus" aria-label="<?php esc_attr_e('Намали количеството', 'your-theme-textdomain'); ?>">-</button>
+                                    <button type="button" class="quantity-btn minus" aria-label="<?php esc_attr_e('Намали количеството', 'storefront'); ?>">-</button>
                                     <input type="number" 
                                         value="<?php echo esc_attr($cart_item['quantity']); ?>" 
                                         min="1" 
-                                        aria-label="<?php esc_attr_e('Количество на продукта', 'your-theme-textdomain'); ?>"
+                                        aria-label="<?php esc_attr_e('Количество на продукта', 'storefront'); ?>"
                                     >
-                                    <button type="button" class="quantity-btn plus" aria-label="<?php esc_attr_e('Увеличи количеството', 'your-theme-textdomain'); ?>">+</button>
+                                    <button type="button" class="quantity-btn plus" aria-label="<?php esc_attr_e('Увеличи количеството', 'storefront'); ?>">+</button>
                                 </div>
                             </div>
                             
-                            <button type="button" class="remove-item" aria-label="<?php esc_attr_e('Премахни продукта', 'your-theme-textdomain'); ?>">&times;</button>
+                            <button type="button" class="remove-item" aria-label="<?php esc_attr_e('Премахни продукта', 'storefront'); ?>">&times;</button>
                         </div>
                         <?php
                     }
@@ -120,7 +120,7 @@ function theme_render_inquiry_cart() {
             
             <div class="cart-footer">
                 <button type="button" id="submit-inquiry" class="button alt">
-                    <?php esc_html_e('Изпрати запитване', 'your-theme-textdomain'); ?>
+                    <?php esc_html_e('Изпрати запитване', 'storefront'); ?>
                 </button>
             </div>
         <?php endif; ?>
@@ -175,15 +175,45 @@ function theme_handle_submit_inquiry() {
 
     try {
         $order = wc_create_order();
+        $customer_id = get_current_user_id();
 
+        // Set customer ID for the order
+        $order->set_customer_id($customer_id);
+
+        // Add products from cart
         foreach (WC()->cart->get_cart() as $cart_item) {
             $order->add_product(
                 $cart_item['data'],
-                $cart_item['quantity']
+                $cart_item['quantity'],
+                [
+                    'variation' => $cart_item['variation'] ?? [],
+                    'variation_id' => $cart_item['variation_id'] ?? 0
+                ]
             );
         }
 
-        $customer_id = get_current_user_id();
+        // Get user data
+        $user_data = get_userdata($customer_id);
+        
+        // Set billing information
+        $billing_address = array(
+            'first_name' => get_user_meta($customer_id, 'first_name', true) ?: $user_data->first_name,
+            'last_name'  => get_user_meta($customer_id, 'last_name', true) ?: $user_data->last_name,
+            'company'    => get_user_meta($customer_id, 'company_name', true),
+            'email'      => $user_data->user_email,
+            'phone'      => get_user_meta($customer_id, 'phone', true),
+            'address_1'  => get_user_meta($customer_id, 'billing_address_1', true),
+            'address_2'  => get_user_meta($customer_id, 'billing_address_2', true),
+            'city'       => get_user_meta($customer_id, 'billing_city', true),
+            'state'      => get_user_meta($customer_id, 'billing_state', true),
+            'postcode'   => get_user_meta($customer_id, 'billing_postcode', true),
+            'country'    => get_user_meta($customer_id, 'billing_country', true)
+        );
+
+        // Set billing data
+        $order->set_address($billing_address, 'billing');
+        
+        // Set additional customer fields
         $customer_fields = array(
             'entity_type',
             'first_name',
@@ -202,14 +232,20 @@ function theme_handle_submit_inquiry() {
             }
         }
 
+        // Set order status and save
         $order->set_status('inquiry');
         $order->save();
 
+        // Empty cart
         WC()->cart->empty_cart();
 
+        // Trigger action
         do_action('theme_inquiry_submitted', $order->get_id());
 
-        wp_send_json_success();
+        wp_send_json_success(array(
+            'order_id' => $order->get_id(),
+            'redirect' => $order->get_view_order_url()
+        ));
 
     } catch (Exception $e) {
         wp_send_json_error(array(

@@ -585,9 +585,10 @@ function custom_woocommerce_save_account_details_bg($customer_id)
 add_action('woocommerce_created_customer', 'custom_woocommerce_save_account_details_bg');
 
 // Display the custom fields on the account edit page
-function custom_woocommerce_edit_account_form_bg()
-{
+function custom_woocommerce_edit_account_form_bg() {
     $user_id = get_current_user_id();
+    
+    // Get user data
     $user_meta = array(
         'entity_type' => get_user_meta($user_id, 'entity_type', true),
         'first_name' => get_user_meta($user_id, 'first_name', true),
@@ -596,14 +597,16 @@ function custom_woocommerce_edit_account_form_bg()
         'egn_eik' => get_user_meta($user_id, 'egn_eik', true),
         'phone' => get_user_meta($user_id, 'phone', true),
         'email_consent' => get_user_meta($user_id, 'email_consent', true),
-        'phone_consent' => get_user_meta($user_id, 'phone_consent', true)
+        'phone_consent' => get_user_meta($user_id, 'phone_consent', true),
+        'billing_address_1' => get_user_meta($user_id, 'billing_address_1', true),
+        'billing_city' => get_user_meta($user_id, 'billing_city', true),
+        'billing_postcode' => get_user_meta($user_id, 'billing_postcode', true)
     );
-
-    // Display entity type selection
     ?>
+    
     <p class="form-row form-row-wide">
         <label><?php _e('Тип потребител:', 'woocommerce'); ?></label>
-        <label>
+        <label style="margin-right: 15px;">
             <input type="radio" name="account_entity_type" value="person" <?php checked($user_meta['entity_type'], 'person'); ?>>
             <?php _e('Физическо лице', 'woocommerce'); ?>
         </label>
@@ -616,22 +619,18 @@ function custom_woocommerce_edit_account_form_bg()
     <div id="account_person_fields" class="entity-fields" <?php echo $user_meta['entity_type'] !== 'person' ? 'style="display:none;"' : ''; ?>>
         <p class="form-row form-row-first">
             <label for="account_first_name"><?php _e('Име:', 'woocommerce'); ?> <span class="required">*</span></label>
-            <input type="text" class="input-text" name="account_first_name" id="account_first_name"
-                value="<?php echo esc_attr($user_meta['first_name']); ?>" />
+            <input type="text" class="input-text" name="account_first_name" id="account_first_name" value="<?php echo esc_attr($user_meta['first_name']); ?>" />
         </p>
         <p class="form-row form-row-last">
             <label for="account_last_name"><?php _e('Фамилия:', 'woocommerce'); ?> <span class="required">*</span></label>
-            <input type="text" class="input-text" name="account_last_name" id="account_last_name"
-                value="<?php echo esc_attr($user_meta['last_name']); ?>" />
+            <input type="text" class="input-text" name="account_last_name" id="account_last_name" value="<?php echo esc_attr($user_meta['last_name']); ?>" />
         </p>
     </div>
 
     <div id="account_company_fields" class="entity-fields" <?php echo $user_meta['entity_type'] !== 'company' ? 'style="display:none;"' : ''; ?>>
         <p class="form-row form-row-wide">
-            <label for="account_company_name"><?php _e('Име на фирма:', 'woocommerce'); ?> <span
-                    class="required">*</span></label>
-            <input type="text" class="input-text" name="account_company_name" id="account_company_name"
-                value="<?php echo esc_attr($user_meta['company_name']); ?>" />
+            <label for="account_company_name"><?php _e('Име на фирма:', 'woocommerce'); ?> <span class="required">*</span></label>
+            <input type="text" class="input-text" name="account_company_name" id="account_company_name" value="<?php echo esc_attr($user_meta['company_name']); ?>" />
         </p>
     </div>
 
@@ -640,14 +639,32 @@ function custom_woocommerce_edit_account_form_bg()
             <?php echo $user_meta['entity_type'] === 'person' ? __('ЕГН:', 'woocommerce') : __('ЕИК:', 'woocommerce'); ?>
             <span class="required">*</span>
         </label>
-        <input type="text" class="input-text" name="account_egn_eik" id="account_egn_eik"
-            value="<?php echo esc_attr($user_meta['egn_eik']); ?>" />
+        <input type="text" class="input-text" name="account_egn_eik" id="account_egn_eik" value="<?php echo esc_attr($user_meta['egn_eik']); ?>" />
+    </p>
+
+    <!-- Add missing billing fields -->
+    <p class="form-row form-row-wide">
+        <label for="account_billing_address_1"><?php _e('Адрес:', 'woocommerce'); ?> <span class="required">*</span></label>
+        <input type="text" class="input-text" name="account_billing_address_1" id="account_billing_address_1" 
+               placeholder="<?php _e('ул./бул., №, бл., вх., ап.', 'woocommerce'); ?>"
+               value="<?php echo esc_attr($user_meta['billing_address_1']); ?>" />
+    </p>
+
+    <p class="form-row form-row-wide">
+        <label for="account_billing_city"><?php _e('Град:', 'woocommerce'); ?> <span class="required">*</span></label>
+        <input type="text" class="input-text" name="account_billing_city" id="account_billing_city" 
+               value="<?php echo esc_attr($user_meta['billing_city']); ?>" />
+    </p>
+
+    <p class="form-row form-row-wide">
+        <label for="account_billing_postcode"><?php _e('Пощенски код:', 'woocommerce'); ?> <span class="required">*</span></label>
+        <input type="text" class="input-text" name="account_billing_postcode" id="account_billing_postcode" 
+               value="<?php echo esc_attr($user_meta['billing_postcode']); ?>" />
     </p>
 
     <p class="form-row form-row-wide">
         <label for="account_phone"><?php _e('Телефон:', 'woocommerce'); ?> <span class="required">*</span></label>
-        <input type="tel" class="input-text" name="account_phone" id="account_phone"
-            value="<?php echo esc_attr($user_meta['phone']); ?>" />
+        <input type="tel" class="input-text" name="account_phone" id="account_phone" value="<?php echo esc_attr($user_meta['phone']); ?>" />
     </p>
 
     <p class="form-row form-row-wide">
@@ -665,18 +682,18 @@ function custom_woocommerce_edit_account_form_bg()
     </p>
 
     <script>
-        jQuery(document).ready(function ($) {
+        jQuery(document).ready(function($) {
             function updateAccountEgnEikLabel(entityType) {
                 var label = entityType === 'person' ? 'ЕГН:' : 'ЕИК:';
                 $('#account_egn_eik_label').html(label + ' <span class="required">*</span>');
 
-                var placeholder = entityType === 'person' ?
-                    '<?php _e("Въведете 10 цифри", "woocommerce"); ?>' :
+                var placeholder = entityType === 'person' ? 
+                    '<?php _e("Въведете 10 цифри", "woocommerce"); ?>' : 
                     '<?php _e("Въведете 9 или 13 цифри", "woocommerce"); ?>';
                 $('#account_egn_eik').attr('placeholder', placeholder);
             }
 
-            $('input[name="account_entity_type"]').change(function () {
+            $('input[name="account_entity_type"]').change(function() {
                 $('.entity-fields').hide();
                 if ($(this).val() === 'person') {
                     $('#account_person_fields').show();
@@ -685,17 +702,26 @@ function custom_woocommerce_edit_account_form_bg()
                 }
                 updateAccountEgnEikLabel($(this).val());
             });
+
+            // Set initial state
+            updateAccountEgnEikLabel($('input[name="account_entity_type"]:checked').val());
         });
     </script>
     <?php
 }
 add_action('woocommerce_edit_account_form', 'custom_woocommerce_edit_account_form_bg');
 
-// Validate account edit form
-function custom_woocommerce_save_account_details_validation_bg($errors, $user)
-{
-    $entity_type = isset($_POST['account_entity_type']) ? $_POST['account_entity_type'] : 'person';
+ 
+// Validate all fields in account details form
+add_filter('woocommerce_save_account_details_errors', function($errors, $user) {
+    $entity_type = isset($_POST['account_entity_type']) ? sanitize_text_field($_POST['account_entity_type']) : '';
 
+    // Entity Type Validation
+    if (empty($entity_type) || !in_array($entity_type, array('person', 'company'))) {
+        $errors->add('entity_type_error', __('Моля, изберете тип потребител.', 'woocommerce'));
+    }
+
+    // Person Fields Validation
     if ($entity_type === 'person') {
         if (empty($_POST['account_first_name'])) {
             $errors->add('first_name_error', __('Моля, въведете вашето име.', 'woocommerce'));
@@ -703,18 +729,22 @@ function custom_woocommerce_save_account_details_validation_bg($errors, $user)
         if (empty($_POST['account_last_name'])) {
             $errors->add('last_name_error', __('Моля, въведете вашата фамилия.', 'woocommerce'));
         }
-    } else {
+    }
+
+    // Company Fields Validation
+    if ($entity_type === 'company') {
         if (empty($_POST['account_company_name'])) {
             $errors->add('company_name_error', __('Моля, въведете име на фирмата.', 'woocommerce'));
         }
     }
 
+    // EGN/EIK Validation
     if (empty($_POST['account_egn_eik'])) {
         $errors->add(
             'egn_eik_error',
-            $entity_type === 'person' ?
-            __('Моля, въведете ЕГН.', 'woocommerce') :
-            __('Моля, въведете ЕИК.', 'woocommerce')
+            $entity_type === 'person' ? 
+                __('Моля, въведете ЕГН.', 'woocommerce') : 
+                __('Моля, въведете ЕИК.', 'woocommerce')
         );
     } else {
         $egn_eik = sanitize_text_field($_POST['account_egn_eik']);
@@ -729,21 +759,109 @@ function custom_woocommerce_save_account_details_validation_bg($errors, $user)
         }
     }
 
+    // Address Validation
+    if (empty($_POST['account_billing_address_1'])) {
+        $errors->add('billing_address_error', __('Моля, въведете адрес.', 'woocommerce'));
+    }
+
+    // City Validation
+    if (empty($_POST['account_billing_city'])) {
+        $errors->add('billing_city_error', __('Моля, въведете град.', 'woocommerce'));
+    }
+
+    // Postcode Validation
+    if (empty($_POST['account_billing_postcode'])) {
+        $errors->add('billing_postcode_error', __('Моля, въведете пощенски код.', 'woocommerce'));
+    } else {
+        $postcode = sanitize_text_field($_POST['account_billing_postcode']);
+        if (!preg_match('/^[0-9]{4}$/', $postcode)) {
+            $errors->add('billing_postcode_format_error', __('Моля, въведете валиден пощенски код (4 цифри).', 'woocommerce'));
+        }
+    }
+
+    // Phone Validation
     if (empty($_POST['account_phone'])) {
         $errors->add('phone_error', __('Моля, въведете телефон.', 'woocommerce'));
     } else {
         $phone = sanitize_text_field($_POST['account_phone']);
         $phone = preg_replace('/[\s\-\(\)]/', '', $phone);
-
+        
         if (!preg_match('/^\+?[0-9]{7,15}$/', $phone)) {
             $errors->add('phone_format_error', __('Моля, въведете валиден телефонен номер.', 'woocommerce'));
         }
     }
 
     return $errors;
-}
-add_filter('woocommerce_save_account_details_errors', 'custom_woocommerce_save_account_details_validation_bg', 10, 2);
+}, 10, 2);
 
+// Save account details with proper validation and sanitization
+function custom_save_account_details($user_id) {
+    // Verify nonce
+    if (!isset($_POST['save-account-details-nonce']) || 
+        !wp_verify_nonce($_POST['save-account-details-nonce'], 'save_account_details')) {
+        return;
+    }
+
+    $entity_type = isset($_POST['account_entity_type']) ? 
+        sanitize_text_field($_POST['account_entity_type']) : '';
+
+    // Basic Fields
+    $fields = array(
+        'account_entity_type' => 'entity_type',
+        'account_egn_eik' => 'egn_eik',
+        'account_phone' => 'phone'
+    );
+
+    // Entity-specific fields
+    if ($entity_type === 'person') {
+        $fields['account_first_name'] = 'first_name';
+        $fields['account_last_name'] = 'last_name';
+    } else {
+        $fields['account_company_name'] = 'company_name';
+    }
+
+    // Billing Fields
+    $billing_fields = array(
+        'account_billing_address_1' => 'billing_address_1',
+        'account_billing_city' => 'billing_city',
+        'account_billing_postcode' => 'billing_postcode'
+    );
+
+    // Consent Fields
+    $consent_fields = array(
+        'account_email_consent' => 'email_consent',
+        'account_phone_consent' => 'phone_consent'
+    );
+
+    // Save Basic Fields
+    foreach ($fields as $post_field => $meta_field) {
+        if (isset($_POST[$post_field])) {
+            $value = sanitize_text_field($_POST[$post_field]);
+            if ($post_field === 'account_phone') {
+                $value = preg_replace('/[\s\-\(\)]/', '', $value);
+            }
+            update_user_meta($user_id, $meta_field, $value);
+        }
+    }
+
+    // Save Billing Fields
+    foreach ($billing_fields as $post_field => $meta_field) {
+        if (isset($_POST[$post_field])) {
+            update_user_meta($user_id, $meta_field, sanitize_text_field($_POST[$post_field]));
+        }
+    }
+
+    // Save Consent Fields
+    foreach ($consent_fields as $post_field => $meta_field) {
+        update_user_meta($user_id, $meta_field, isset($_POST[$post_field]) ? '1' : '0');
+    }
+
+    // Clear any cached user meta
+    wp_cache_delete($user_id, 'user_meta');
+}
+remove_action('woocommerce_save_account_details', 'woocommerce_save_account_details');
+add_action('woocommerce_save_account_details', 'custom_save_account_details');
+ 
 // Save account details
 function custom_woocommerce_save_account_details_bg_update($user_id)
 {
@@ -1135,3 +1253,112 @@ function add_editor_woo_caps() {
     $role->add_cap('view_woocommerce_reports');
     // $role->add_cap('manage_woocommerce'); 
 }
+
+
+  // Register custom order status translations
+  add_filter('woocommerce_register_shop_order_post_statuses', function($statuses) {
+    $statuses['wc-inquiry'] = [
+        'label' => _x('Запитване', 'Order status', 'woocommerce'),
+        'public' => true,
+        'show_in_admin_status_list' => true,
+        'show_in_admin_all_list' => true,
+        'exclude_from_search' => false,
+        'label_count' => _n_noop(
+            'Запитване <span class="count">(%s)</span>',
+            'Запитвания <span class="count">(%s)</span>'
+        )
+    ];
+    return $statuses;
+});
+ 
+ 
+// Add custom fields to admin order details
+add_action('woocommerce_admin_order_data_after_billing_address', 'display_custom_fields_in_admin_order', 10, 1);
+function display_custom_fields_in_admin_order($order) {
+    $user_id = $order->get_user_id();
+    if (!$user_id) return;
+
+    $entity_type = get_user_meta($user_id, 'entity_type', true);
+    $egn_eik = get_user_meta($user_id, 'egn_eik', true);
+    $phone = get_user_meta($user_id, 'phone', true);
+    $email_consent = get_user_meta($user_id, 'email_consent', true);
+    $phone_consent = get_user_meta($user_id, 'phone_consent', true);
+
+    echo '<div class="custom-field-section" style="margin-top: 20px;">';
+    echo '<h3>Допълнителна информация</h3>';
+    
+    // Display entity type and corresponding fields
+    echo '<p><strong>Тип потребител:</strong> ' . 
+        ($entity_type === 'person' ? 'Физическо лице' : 'Юридическо лице') . '</p>';
+    
+    if ($entity_type === 'person') {
+        $first_name = get_user_meta($user_id, 'first_name', true);
+        $last_name = get_user_meta($user_id, 'last_name', true);
+        echo '<p><strong>Име и фамилия:</strong> ' . 
+            esc_html($first_name . ' ' . $last_name) . '</p>';
+        echo '<p><strong>ЕГН:</strong> ' . esc_html($egn_eik) . '</p>';
+    } else {
+        $company_name = get_user_meta($user_id, 'company_name', true);
+        echo '<p><strong>Име на фирма:</strong> ' . 
+            esc_html($company_name) . '</p>';
+        echo '<p><strong>ЕИК:</strong> ' . esc_html($egn_eik) . '</p>';
+    }
+
+    echo '<p><strong>Телефон:</strong> ' . esc_html($phone) . '</p>';
+
+    // Display consent information
+    echo '<h4 style="margin-top: 15px;">Съгласия</h4>';
+    echo '<p><strong>Съгласие за имейл:</strong> ' . 
+        ($email_consent ? 'Да' : 'Не') . '</p>';
+    echo '<p><strong>Съгласие за телефон:</strong> ' . 
+        ($phone_consent ? 'Да' : 'Не') . '</p>';
+    echo '</div>';
+}
+
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+
+
+ 
+// Register new email classes
+add_filter('woocommerce_email_classes', 'add_inquiry_email_classes');
+function add_inquiry_email_classes($email_classes) {
+    $theme_path = get_stylesheet_directory(); // Child theme path, falls back to parent if no child theme
+ 
+    
+    // Try child theme first, then parent theme
+ 
+        include_once $theme_path . '/inc/emails/class-wc-email-inquiry-admin.php';
+        include_once $theme_path . '/inc/emails/class-wc-email-inquiry-customer.php';
+    
+    
+    $email_classes['WC_Email_Inquiry_Admin'] = new WC_Email_Inquiry_Admin();
+    $email_classes['WC_Email_Inquiry_Customer'] = new WC_Email_Inquiry_Customer();
+    
+    return $email_classes;
+}
+
+// Also update template path handling in email classes
+add_filter('woocommerce_template_directory', 'add_inquiry_template_directory', 10, 2);
+function add_inquiry_template_directory($directory, $template) {
+    if (strpos($template, 'inquiry') !== false) {
+        return 'woocommerce';
+    }
+    return $directory;
+}
+ 
+add_action('storefront_sidebar', 'custom_storefront_sidebar', 5);
+function custom_storefront_sidebar() {
+    // Remove default sidebar
+    remove_action('storefront_sidebar', 'storefront_get_sidebar', 10);
+    
+    // Only show sidebar on WooCommerce pages
+    if (is_woocommerce() || is_shop() || is_product_category() || is_product_tag() || is_product() || is_cart() || is_checkout() || is_account_page()) {
+        add_action('storefront_sidebar', 'storefront_get_sidebar', 10);
+    }
+}
+
+ 

@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
  */
 function theme_register_inquiry_order_status() {
     register_post_status('wc-inquiry', array(
-        'label' => _x('Inquiry', 'Order status', 'your-theme-textdomain'),
+        'label' => _x('Запитване', 'Order status', 'storefront'),
         'public' => true,
         'show_in_admin_status_list' => true,
         'show_in_admin_all_list' => true,
@@ -16,7 +16,7 @@ function theme_register_inquiry_order_status() {
         'label_count' => _n_noop(
             'Inquiry <span class="count">(%s)</span>',
             'Inquiries <span class="count">(%s)</span>',
-            'your-theme-textdomain'
+            'storefront'
         )
     ));
 }
@@ -25,7 +25,7 @@ function theme_register_inquiry_order_status() {
  * Add inquiry status to order statuses
  */
 function theme_add_inquiry_to_order_statuses($order_statuses) {
-    $order_statuses['wc-inquiry'] = _x('Inquiry', 'Order status', 'your-theme-textdomain');
+    $order_statuses['wc-inquiry'] = _x('Запитване', 'Order status', 'storefront');
     return $order_statuses;
 }
 
@@ -99,10 +99,10 @@ function theme_enqueue_inquiry_cart_assets() {
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('theme-inquiry-cart'),
         'i18n' => array(
-            'successMessage' => __('Вашето запитване е изпратено успешно!', 'your-theme-textdomain'),
-            'errorMessage' => __('Грешка при изпращане на запитването. Моля, опитайте отново.', 'your-theme-textdomain'),
-            'removeItemConfirm' => __('Сигурни ли сте, че искате да премахнете този продукт?', 'your-theme-textdomain'),
-            'confirmSubmit' => __('Сигурни ли сте, че искате да изпратите това запитване?', 'your-theme-textdomain')
+            'successMessage' => __('Вашето запитване е изпратено успешно!', 'storefront'),
+            'errorMessage' => __('Грешка при изпращане на запитването. Моля, опитайте отново.', 'storefront'),
+            'removeItemConfirm' => __('Сигурни ли сте, че искате да премахнете този продукт?', 'storefront'),
+            'confirmSubmit' => __('Сигурни ли сте, че искате да изпратите това запитване?', 'storefront')
         )
     ));
 
@@ -115,7 +115,7 @@ function theme_enqueue_inquiry_cart_assets() {
     wp_localize_script('theme-inquiry-cart', 'wc_add_to_cart_params', array(
         'ajax_url' => WC()->ajax_url(),
         'wc_ajax_url' => \WC_AJAX::get_endpoint('%%endpoint%%'),
-        'i18n_view_cart' => esc_attr__('View inquiry cart', 'your-theme-textdomain'),
+        'i18n_view_cart' => esc_attr__('View inquiry cart', 'storefront'),
         'cart_url' => apply_filters('woocommerce_add_to_cart_redirect', wc_get_cart_url()),
         'is_cart' => false,
         'cart_redirect_after_add' => false
@@ -127,7 +127,7 @@ function theme_enqueue_inquiry_cart_assets() {
  */
 function theme_modify_variation($variation_data, $product, $variation) {
     $variation_data['add_to_cart_url'] = $product->get_permalink();
-    $variation_data['add_to_cart_text'] = __('Add to Inquiry', 'your-theme-textdomain');
+    $variation_data['add_to_cart_text'] = __('Add to Inquiry', 'storefront');
     return $variation_data;
 }
 
@@ -180,7 +180,7 @@ function theme_redirect_checkout_to_cart() {
  * Modify add to cart button text
  */
 function theme_modify_add_to_cart_text() {
-    return __('Add to Inquiry', 'your-theme-textdomain');
+    return __('Add to Inquiry', 'storefront');
 }
 
 /**
@@ -202,7 +202,7 @@ function theme_cart_button_fragment($fragments) {
  * Modify add to cart button
  */
 function theme_add_to_cart_button($button, $product) {
-    $button_text = __('Add to Inquiry', 'your-theme-textdomain');
+    $button_text = __('Add to Inquiry', 'storefront');
     $button_classes = array(
         'button',
         'product_type_' . $product->get_type(),
@@ -220,7 +220,7 @@ function theme_add_to_cart_button($button, $product) {
         $product->is_type('variable') ? '' : 'data-variation_id=""',
         esc_attr($product->get_id()),
         esc_attr($product->get_sku()),
-        esc_attr(sprintf(__('Add "%s" to inquiry', 'your-theme-textdomain'), $product->get_name())),
+        esc_attr(sprintf(__('Add "%s" to inquiry', 'storefront'), $product->get_name())),
         esc_html($button_text)
     );
 }
@@ -242,7 +242,7 @@ function theme_handle_update_cart_display() {
 
     // Ensure WC is loaded
     if (!function_exists('WC') || !WC()->cart) {
-        wp_send_json_error(['message' => __('WooCommerce cart is not available', 'your-theme-textdomain')]);
+        wp_send_json_error(['message' => __('WooCommerce cart is not available', 'storefront')]);
         return;
     }
 
