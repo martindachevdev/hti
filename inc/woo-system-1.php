@@ -100,7 +100,7 @@ function theme_enqueue_inquiry_cart_assets() {
         'nonce' => wp_create_nonce('theme-inquiry-cart'),
         'i18n' => array(
             'successMessage' => __('Вашето запитване е изпратено успешно!', 'storefront'),
-            'errorMessage' => __('Грешка при изпращане на запитването. Моля, опитайте отново.', 'storefront'),
+            'errorMessage' => __('Необходимо е да влезете в профила си за да направите запитване!', 'storefront'),
             'removeItemConfirm' => __('Сигурни ли сте, че искате да премахнете този продукт?', 'storefront'),
             'confirmSubmit' => __('Сигурни ли сте, че искате да изпратите това запитване?', 'storefront')
         )

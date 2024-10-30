@@ -369,13 +369,15 @@
                     nonce: themeInquiryCart.nonce
                 },
                 success: (response) => {
-                    if (response.success) {
-                        // alert(themeInquiryCart.i18n.successMessage);
-                        // location.reload();
+               
+                        if(response.data && response.data.success) {
+                            alert(themeInquiryCart.i18n.successMessage);
+                        } else{
+                            alert(themeInquiryCart.i18n.errorMessage);
+
+                        }
                         window.location.href = response.data.redirect;
-                    } else if (response.data && response.data.message) {
-                        alert(response.data.message);
-                    }
+                    
                 },
                 error: () => {
                     alert(themeInquiryCart.i18n.errorMessage);

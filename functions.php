@@ -324,16 +324,27 @@ function storefront_site_branding()
                             <g>
                             </g>
                         </svg>
-
+                    </a>
+                    <a href="#" id="site-menu-toggle" class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 20 20" fill="none">
+  <path fill="currentColor" fill-rule="evenodd" d="M19 4a1 1 0 01-1 1H2a1 1 0 010-2h16a1 1 0 011 1zm0 6a1 1 0 01-1 1H2a1 1 0 110-2h16a1 1 0 011 1zm-1 7a1 1 0 100-2H2a1 1 0 100 2h16z"/>
+</svg>
                     </a>
             </div>
             <?php get_my_search_form(); ?>
         </div>
     </div>
     <script>
+ 
+        jQuery('#site-menu-toggle').click( function () {
+            jQuery(this).toggleClass('active');
+            jQuery('.main-navigation').toggleClass('toggled');
+             
+        });
         // Search toggle
         jQuery('#site-search-toggle').click(function ($) {
             jQuery('#site-search-toggle').toggleClass('active');
+          
             jQuery('.search-form').slideToggle('fast', function () {
                 if (jQuery('.search-form').is(':visible')) {
                     jQuery('.search-field').val("");

@@ -172,7 +172,14 @@ function theme_handle_remove_cart_item() {
 
 function theme_handle_submit_inquiry() {
     check_ajax_referer('theme-inquiry-cart', 'nonce');
-
+    if(!is_user_logged_in()){
+        wp_send_json_error( 
+            array(
+                'redirect' => get_permalink( get_option('woocommerce_myaccount_page_id') )
+            )
+            );
+        return;
+    }
     try {
         $order = wc_create_order();
         $customer_id = get_current_user_id();
@@ -238,9 +245,12 @@ function theme_handle_submit_inquiry() {
 
         // Empty cart
         WC()->cart->empty_cart();
+ 
+        // Send customer email
+        WC()->mailer()->get_emails()['WC_Email_Inquiry_Customer']->trigger($order->get_id());
 
-        // Trigger action
-        do_action('theme_inquiry_submitted', $order->get_id());
+        // Send admin new order email
+        WC()->mailer()->get_emails()['WC_Email_Inquiry_Admin']->trigger($order->get_id());
 
         wp_send_json_success(array(
             'order_id' => $order->get_id(),
