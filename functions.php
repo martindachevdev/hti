@@ -1482,3 +1482,167 @@ function add_measure_unit_variation_header($headers) {
     return $headers;
 }
  
+// Display measure unit after quantity in cart
+add_filter('woocommerce_cart_item_quantity', 'add_measure_unit_after_quantity', 10, 3);
+function add_measure_unit_after_quantity($quantity_html, $cart_item_key, $cart_item) {
+    if (isset($cart_item['measure_unit'])) {
+        return str_replace('</div>', ' ' . esc_html($cart_item['measure_unit']) . '</div>', $quantity_html);
+    }
+    return $quantity_html;
+}
+
+// Display measure unit after quantity in order details
+add_filter('woocommerce_order_item_quantity_html', 'add_measure_unit_after_order_quantity', 10, 2);
+function add_measure_unit_after_order_quantity($quantity_html, $item) {
+    $measure_unit = $item->get_meta('Мерна единица');
+    if (!empty($measure_unit)) {
+        return str_replace('&times;', '&times; ' . esc_html($measure_unit), $quantity_html);
+    }
+    return $quantity_html;
+}
+
+// Display measure unit in order emails
+add_filter('woocommerce_email_order_item_quantity', 'add_measure_unit_in_email', 10, 2);
+function add_measure_unit_in_email($quantity, $item) {
+    $measure_unit = $item->get_meta('Мерна единица');
+    if (!empty($measure_unit)) {
+        return $quantity . ' ' . esc_html($measure_unit);
+    }
+    return $quantity;
+}
+
+// Add measure unit to mini cart quantity
+add_filter('woocommerce_widget_cart_item_quantity', 'add_measure_unit_to_mini_cart', 10, 3);
+function add_measure_unit_to_mini_cart($quantity_html, $cart_item, $cart_item_key) {
+    if (isset($cart_item['measure_unit'])) {
+        return str_replace('&times;', '&times; ' . esc_html($cart_item['measure_unit']), $quantity_html);
+    }
+    return $quantity_html;
+}
+
+// Optional: Add CSS to style the measure unit display
+add_action('wp_head', 'add_measure_unit_styles');
+function add_measure_unit_styles() {
+    ?>
+    <style>
+        /* Style for measure unit in cart */
+        .product-quantity .quantity .measure-unit {
+            margin-left: 4px;
+            color: #666;
+        }
+        
+        /* Style for measure unit in order details */
+        .woocommerce-table__product-quantity .product-quantity .measure-unit {
+            margin-left: 4px;
+            color: #666;
+        }
+        
+        /* Style for measure unit in mini cart */
+        .mini_cart_item .quantity .measure-unit {
+            margin-left: 4px;
+            color: #666;
+        }
+    </style>
+    <?php
+}
+
+// Modify the quantity input template
+add_filter('woocommerce_quantity_input_args', 'add_measure_unit_to_quantity_input', 10, 2);
+function add_measure_unit_to_quantity_input($args, $product) {
+    if ($product->is_type('variation')) {
+        $measure_unit = get_post_meta($product->get_id(), 'attribute_measure_unit', true);
+        if (!empty($measure_unit)) {
+            // Add measure unit to the input field label
+            if (!empty($args['product_name'])) {
+                $args['product_name'] .= ' (' . $measure_unit . ')';
+            }
+        }
+    }
+    return $args;
+}
+
+// Add measure unit to order item display in admin
+add_action('woocommerce_admin_order_item_values', 'add_measure_unit_to_admin_order_items', 10, 3);
+function add_measure_unit_to_admin_order_items($product, $item, $item_id) {
+    $measure_unit = $item->get_meta('Мерна единица');
+    if (!empty($measure_unit)) {
+        echo '<small class="measure-unit" style="display:inline-block;margin-left:4px;color:#666;">(' . esc_html($measure_unit) . ')</small>';
+    }
+}
+
+// Add measure unit to PDF invoices if using WooCommerce PDF Invoices & Packing Slips
+add_filter('wpo_wcpdf_order_item_quantity', 'add_measure_unit_to_pdf_invoice', 10, 4);
+function add_measure_unit_to_pdf_invoice($quantity, $item, $document_type, $order) {
+    $measure_unit = $item->get_meta('Мерна единица');
+    if (!empty($measure_unit)) {
+        return $quantity . ' ' . $measure_unit;
+    }
+    return $quantity;
+}
+
+// Optional: Add measure unit to structured data
+add_filter('woocommerce_structured_data_product_offer', 'add_measure_unit_to_structured_data', 10, 2);
+function add_measure_unit_to_structured_data($markup, $product) {
+    if ($product->is_type('variation')) {
+        $measure_unit = get_post_meta($product->get_id(), 'attribute_measure_unit', true);
+        if (!empty($measure_unit)) {
+            $markup['unitCode'] = esc_attr($measure_unit);
+        }
+    }
+    return $markup;
+}
+
+
+// new
+ 
+
+// Add measure unit after quantity input in single product variations
+add_action('woocommerce_before_add_to_cart_quantity', 'before_add_to_cart_quantity_unit');
+add_action('woocommerce_after_add_to_cart_quantity', 'after_add_to_cart_quantity_unit');
+
+function before_add_to_cart_quantity_unit() {
+    global $product;
+    if ($product->is_type('variable')) {
+        echo '<div class="quantity-wrapper">';
+    }
+}
+
+function after_add_to_cart_quantity_unit() {
+    global $product;
+    if ($product->is_type('variable')) {
+        echo '<span class="variation-measure-unit"></span></div>';
+    }
+}
+
+  
+// Optional: Add custom translations programmatically
+add_filter('gettext', 'custom_storefront_translations', 20, 3);
+function custom_storefront_translations($translated_text, $text, $domain) {
+        switch ($text) {
+            case 'Search Results for:':
+                return 'Резултати от търсене за:';
+            case 'Add to cart':
+                return 'Добави към запитване';
+            case 'View your shopping cart':
+                return 'Преглед на запитване';
+            // Add more translations as needed
+        }
+ 
+    return $translated_text;
+}
+
+add_filter('woocommerce_order_number_formatted', 'custom_order_number_format', 20, 2);
+ 
+
+
+ 
+add_filter('gettext', 'replace_order_text_patterns', 20, 3);
+function replace_order_text_patterns($translated_text, $text, $domain) {
+ 
+        // Replace simple order number format
+        $translated_text = str_replace('Поръчка №', 'Запитване №', $translated_text);
+ 
+    
+    return $translated_text;
+}
+ 

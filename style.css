@@ -457,3 +457,46 @@ table.woocommerce-orders-table.woocommerce-MyAccount-orders.shop_table.shop_tabl
 .woocommerce-MyAccount-content .product-info {
   flex: 1;
 }
+
+
+.quantity-wrapper {
+  display: flex;
+  align-items: center;
+  margin-bottom: 19px;
+}
+
+button.single_add_to_cart_button.button {
+  display: block;
+  float: none;
+}
+
+span.variation-measure-unit {
+  display: inline-block;
+  align-items: center;
+}
+
+.single-product div.product form.cart .quantity {
+  margin: 0;
+  margin-right: 7px;
+}
+
+.woocommerce-tabs.wc-tabs-wrapper {
+  display: none;
+}
+
+section.related.products {
+  display: none;
+}
+
+label[for='model'] {
+  display: none;
+}
+
+ 
+.woocommerce-view-order section.woocommerce-order-details h2 {
+  display: none;
+}
+
+.woocommerce-view-order .woocommerce-MyAccount-content > p {
+  display: none;
+} 

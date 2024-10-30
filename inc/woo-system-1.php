@@ -127,7 +127,7 @@ function theme_enqueue_inquiry_cart_assets() {
  */
 function theme_modify_variation($variation_data, $product, $variation) {
     $variation_data['add_to_cart_url'] = $product->get_permalink();
-    $variation_data['add_to_cart_text'] = __('Add to Inquiry', 'storefront');
+    $variation_data['add_to_cart_text'] = __('Добави към запитване', 'storefront');
     return $variation_data;
 }
 
@@ -180,7 +180,7 @@ function theme_redirect_checkout_to_cart() {
  * Modify add to cart button text
  */
 function theme_modify_add_to_cart_text() {
-    return __('Add to Inquiry', 'storefront');
+    return __('Добави към запитване', 'storefront');
 }
 
 /**
@@ -202,7 +202,7 @@ function theme_cart_button_fragment($fragments) {
  * Modify add to cart button
  */
 function theme_add_to_cart_button($button, $product) {
-    $button_text = __('Add to Inquiry', 'storefront');
+    $button_text = __('Добави към запитване', 'storefront');
     $button_classes = array(
         'button',
         'product_type_' . $product->get_type(),

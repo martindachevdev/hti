@@ -4,7 +4,35 @@
 
 (function ($) {
     'use strict';
+    var $variationForm = $(".variations_form");
+            
+    $variationForm.on("found_variation", function(event, variation) {
+        var measureUnit = variation.measure_unit;
+        if (measureUnit) {
+            $(".variation-measure-unit").text(measureUnit);
+            $(".quantity-wrapper").addClass("has-unit");
+        } else {
+            $(".variation-measure-unit").text("");
+            $(".quantity-wrapper").removeClass("has-unit");
+        }
+    });
+    
+    $variationForm.on("reset_data", function() {
+        $(".variation-measure-unit").text("");
+        $(".quantity-wrapper").removeClass("has-unit");
+    });
 
+    $('.single_add_to_cart_button').removeClass('alt');
+        
+    // For variations form
+    $('.variations_form').on('found_variation', function() {
+        $('.single_add_to_cart_button').removeClass('alt');
+    });
+    
+    // When variations are reset
+    $('.variations_form').on('reset_data', function() {
+        $('.single_add_to_cart_button').removeClass('alt');
+    });
     const InquiryCart = {
         selectors: {
             cart: '#floating-inquiry-cart',
@@ -50,7 +78,7 @@
                 
                 e.preventDefault();
                 e.stopPropagation();
-                self.toggleCart();
+                // self.toggleCart();
             });
 
             // Quantity buttons
@@ -333,8 +361,9 @@
                 },
                 success: (response) => {
                     if (response.success) {
-                        alert(themeInquiryCart.i18n.successMessage);
-                        location.reload();
+                        // alert(themeInquiryCart.i18n.successMessage);
+                        // location.reload();
+                        window.location.href = response.data.redirect;
                     } else if (response.data && response.data.message) {
                         alert(response.data.message);
                     }
