@@ -204,6 +204,7 @@ class ProductImporter {
             $model = sanitize_text_field($variation_data[4]); // Model
             $description = !empty($variation_data[3]) ? sanitize_text_field($variation_data[3]) : '';
             $sku = !empty($variation_data[6]) ? sanitize_text_field($variation_data[6]) : '';
+            $measure_unit = !empty($variation_data[5]) ? sanitize_text_field($variation_data[5]) : '';
 
             // Create variation
             $variation = new WC_Product_Variation();
@@ -231,6 +232,15 @@ class ProductImporter {
 
                 // Set model attribute
                 update_post_meta($variation_id, 'attribute_model', $model);
+                if ($measure_unit) {
+                    update_post_meta($variation_id, 'attribute_measure_unit', $measure_unit);
+                }
+                $this->import_stats['debug'][] = sprintf(
+                    "Created variation %d for model %s with measure unit: %s",
+                    $variation_id,
+                    $model,
+                    $measure_unit ?: 'none'
+                );
             }
         }
 

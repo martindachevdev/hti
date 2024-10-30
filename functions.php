@@ -1360,5 +1360,125 @@ function custom_storefront_sidebar() {
         add_action('storefront_sidebar', 'storefront_get_sidebar', 10);
     }
 }
+ // Add this to your child theme's functions.php or a custom plugin
+add_filter('storefront_sidebar', function() {
+    // Remove sidebar from non-WooCommerce pages
+    if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page()) {
+        return false;
+    }
+    return true;
+});
 
+// Optional: Add custom body class for CSS control
+add_filter('body_class', function($classes) {
+    if (is_woocommerce() || is_cart() || is_checkout() || is_account_page()) {
+        $classes[] = 'has-woo-sidebar';
+    } else {
+        $classes[] = 'no-sidebar';
+    }
+    return $classes;
+});
+
+// Optional: Add CSS to adjust layout when sidebar is hidden
+add_action('wp_head', function() {
+    ?>
+    <style>
+        .no-sidebar .content-area {
+            width: 100% !important;
+            float: none !important;
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+        }
+        
+        .no-sidebar .site-main {
+            margin-right: 0 !important;
+            margin-left: 0 !important;
+        }
+    </style>
+    <?php
+});
+
+
+// Add measure unit field to product variation options
+add_action('woocommerce_product_after_variable_attributes', 'add_variation_measure_unit_field', 10, 3);
+function add_variation_measure_unit_field($loop, $variation_data, $variation) {
+    woocommerce_wp_select(array(
+        'id' => "attribute_measure_unit_{$loop}",  // Make ID unique per variation
+        'name' => "attribute_measure_unit[{$loop}]",
+        'label' => __('Мерна единица', 'woocommerce'),
+        'value' => get_post_meta($variation->ID, 'attribute_measure_unit', true),
+        'options' => array(
+            '' => __('Изберете...', 'woocommerce'),
+            'бр.' => __('брой', 'woocommerce'),
+            'кг.' => __('килограм', 'woocommerce'),
+            'гр.' => __('грам', 'woocommerce'),
+            'л.' => __('литър', 'woocommerce'),
+            'мл.' => __('милилитър', 'woocommerce'),
+            'м.' => __('метър', 'woocommerce'),
+            'см.' => __('сантиметър', 'woocommerce'),
+            'м2' => __('квадратен метър', 'woocommerce'),
+            'м3' => __('кубичен метър', 'woocommerce'),
+            'к-т' => __('комплект', 'woocommerce')
+        ),
+        'wrapper_class' => 'form-row form-row-full'
+    ));
+}
+
+// Save variation measure unit
+add_action('woocommerce_save_product_variation', 'save_variation_measure_unit_field', 10, 2);
+function save_variation_measure_unit_field($variation_id, $loop) {
+    $measure_unit = isset($_POST['attribute_measure_unit'][$loop]) ? sanitize_text_field($_POST['attribute_measure_unit'][$loop]) : '';
+    update_post_meta($variation_id, 'attribute_measure_unit', $measure_unit);
+}
+
+// Display measure unit on the frontend
+add_filter('woocommerce_available_variation', 'add_measure_unit_to_variations', 10, 3);
+function add_measure_unit_to_variations($variations, $product, $variation) {
+    $measure_unit = get_post_meta($variation->get_id(), 'attribute_measure_unit', true);
+    if (!empty($measure_unit)) {
+        $variations['measure_unit'] = $measure_unit;
+        // Add measure unit to price html
+        $variations['price_html'] = str_replace('</span>', ' / ' . esc_html($measure_unit) . '</span>', $variations['price_html']);
+    }
+    return $variations;
+}
+
+// Add measure unit to cart item data
+add_filter('woocommerce_add_cart_item_data', 'add_measure_unit_to_cart_item', 10, 3);
+function add_measure_unit_to_cart_item($cart_item_data, $product_id, $variation_id) {
+    if ($variation_id) {
+        $measure_unit = get_post_meta($variation_id, 'attribute_measure_unit', true);
+        if (!empty($measure_unit)) {
+            $cart_item_data['measure_unit'] = $measure_unit;
+        }
+    }
+    return $cart_item_data;
+}
+
+// Display measure unit in cart and checkout
+add_filter('woocommerce_get_item_data', 'display_measure_unit_cart', 10, 2);
+function display_measure_unit_cart($item_data, $cart_item) {
+    if (isset($cart_item['measure_unit'])) {
+        $item_data[] = array(
+            'key' => __('Мерна единица', 'woocommerce'),
+            'value' => $cart_item['measure_unit']
+        );
+    }
+    return $item_data;
+}
+
+// Add measure unit to order item meta
+add_action('woocommerce_checkout_create_order_line_item', 'add_measure_unit_to_order_item', 10, 4);
+function add_measure_unit_to_order_item($item, $cart_item_key, $values, $order) {
+    if (isset($values['measure_unit'])) {
+        $item->add_meta_data(__('Мерна единица', 'woocommerce'), $values['measure_unit']);
+    }
+}
+
+// Add custom column to variations tab
+add_filter('woocommerce_variation_headers', 'add_measure_unit_variation_header');
+function add_measure_unit_variation_header($headers) {
+    $headers['measure_unit'] = __('Мерна единица', 'woocommerce');
+    return $headers;
+}
  
