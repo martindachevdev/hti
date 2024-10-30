@@ -48,14 +48,23 @@
         },
 
         isProcessing: false,
+        isPageLoad: true,
 
         init() {
             this.bindEvents();
             this.initWooCommerce();
             this.initializeQuantityInputs();
+             // Reset page load flag after init
+             setTimeout(() => {
+                this.isPageLoad = false;
+            }, 2000);
         },
 
         bindEvents() {
+            $(document.body).on('wc_fragments_refreshed', function(e) {
+                console.log(e);
+                self.openCart();
+            });
             $('body').on('click', '.close-cart', function() {
                self.toggleCart();
             });
@@ -78,7 +87,7 @@
                 
                 e.preventDefault();
                 e.stopPropagation();
-                // self.toggleCart();
+                self.toggleCart();
             });
 
             // Quantity buttons
@@ -228,8 +237,7 @@
                             
                             // Trigger event
                             $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
-                            
-                            self.openCart();
+ 
                         },
                         complete: function() {
                             self.hideLoader();
@@ -268,6 +276,7 @@
         },
 
         openCart() {
+            if(this.isPageLoad) return;
             const $cart = $(this.selectors.cart);
             $cart.addClass('active');
             $('body').addClass('has-floating-cart');
@@ -440,10 +449,7 @@
                         // Handle empty cart state
                         if (response.data.is_empty) {
                             this.closeCart();
-                        } else if (wasActive) {
-                            // If cart wasn't empty and was active, ensure it stays open
-                            this.openCart();
-                        }
+                        } 
 
                         // Update cart counter if available
                         if (response.data.cart_count !== undefined) {
@@ -464,9 +470,7 @@
 
                     // Final state check to ensure cart state is correct
                     const $updatedCart = $(this.selectors.cart);
-                    if (wasActive && !$updatedCart.hasClass('active') && !response?.data?.is_empty) {
-                        this.openCart();
-                    }
+             
                 }
             });
         },
