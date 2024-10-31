@@ -1,5 +1,5 @@
 <?php
- 
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -24,9 +24,24 @@ class WC_Email_Inquiry_Admin extends WC_Email {
     public function trigger($order_id) {
         $this->object = wc_get_order($order_id);
         
-        if ($this->is_enabled() && $this->get_recipient()) {
+        if ($this->object && $this->is_enabled() && $this->get_recipient()) {
+            // Replace placeholders in subject and heading
+            $this->subject = $this->format_string($this->get_option('subject', $this->subject));
+            $this->heading = $this->format_string($this->get_option('heading', $this->heading));
+            
             $this->send($this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments());
         }
+    }
+    
+    public function format_string($string) {
+        if ($this->object) {
+            $string = str_replace(
+                array('{order_number}', '{site_title}'),
+                array($this->object->get_order_number(), wp_specialchars_decode(get_option('blogname'), ENT_QUOTES)),
+                $string
+            );
+        }
+        return $string;
     }
     
     public function get_content_html() {

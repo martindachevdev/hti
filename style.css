@@ -520,3 +520,7 @@ label[for='model'] {
 button#site-navigation-menu-toggle {
   display: none;
 }
+
+a.added_to_cart.wc-forward {
+  display: none;
+}

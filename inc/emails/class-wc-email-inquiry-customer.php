@@ -26,8 +26,24 @@ class WC_Email_Inquiry_Customer extends WC_Email {
         
         if ($this->object && $this->is_enabled()) {
             $this->recipient = $this->object->get_billing_email();
+            
+            // Format the subject and heading with order number
+            $this->subject = $this->format_string($this->get_option('subject', $this->subject));
+            $this->heading = $this->format_string($this->get_option('heading', $this->heading));
+            
             $this->send($this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments());
         }
+    }
+    
+    public function format_string($string) {
+        if ($this->object) {
+            $string = str_replace(
+                '{order_number}',
+                $this->object->get_order_number(),
+                $string
+            );
+        }
+        return $string;
     }
     
     public function get_content_html() {

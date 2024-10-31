@@ -369,15 +369,12 @@
                     nonce: themeInquiryCart.nonce
                 },
                 success: (response) => {
-               
-                        if(response.data && response.data.success) {
+                        if(response.data && response.success) {
                             alert(themeInquiryCart.i18n.successMessage);
                         } else{
                             alert(themeInquiryCart.i18n.errorMessage);
-
                         }
                         window.location.href = response.data.redirect;
-                    
                 },
                 error: () => {
                     alert(themeInquiryCart.i18n.errorMessage);
