@@ -1361,55 +1361,6 @@ function add_inquiry_template_directory($directory, $template) {
     return $directory;
 }
  
-add_action('storefront_sidebar', 'custom_storefront_sidebar', 5);
-function custom_storefront_sidebar() {
-    // Remove default sidebar
-    remove_action('storefront_sidebar', 'storefront_get_sidebar', 10);
-    
-    // Only show sidebar on WooCommerce pages
-    if (is_woocommerce() || is_shop() || is_product_category() || is_product_tag() || is_product() || is_cart() || is_checkout() || is_account_page()) {
-        add_action('storefront_sidebar', 'storefront_get_sidebar', 10);
-    }
-}
- // Add this to your child theme's functions.php or a custom plugin
-add_filter('storefront_sidebar', function() {
-    // Remove sidebar from non-WooCommerce pages
-    if (!is_woocommerce() && !is_cart() && !is_checkout() && !is_account_page()) {
-        return false;
-    }
-    return true;
-});
-
-// Optional: Add custom body class for CSS control
-add_filter('body_class', function($classes) {
-    if (is_woocommerce() || is_cart() || is_checkout() || is_account_page()) {
-        $classes[] = 'has-woo-sidebar';
-    } else {
-        $classes[] = 'no-sidebar';
-    }
-    return $classes;
-});
-
-// Optional: Add CSS to adjust layout when sidebar is hidden
-add_action('wp_head', function() {
-    ?>
-    <style>
-        .no-sidebar .content-area {
-            width: 100% !important;
-            float: none !important;
-            margin-right: 0 !important;
-            margin-left: 0 !important;
-        }
-        
-        .no-sidebar .site-main {
-            margin-right: 0 !important;
-            margin-left: 0 !important;
-        }
-    </style>
-    <?php
-});
-
-
 // Add measure unit field to product variation options
 add_action('woocommerce_product_after_variable_attributes', 'add_variation_measure_unit_field', 10, 3);
 function add_variation_measure_unit_field($loop, $variation_data, $variation) {
@@ -1630,6 +1581,8 @@ function after_add_to_cart_quantity_unit() {
 add_filter('gettext', 'custom_storefront_translations', 20, 3);
 function custom_storefront_translations($translated_text, $text, $domain) {
         switch ($text) {
+            case 'Next':
+                return 'Следваща';
             case 'Search Results for:':
                 return 'Резултати от търсене за:';
             case 'Add to cart':
@@ -1656,4 +1609,48 @@ function replace_order_text_patterns($translated_text, $text, $domain) {
     
     return $translated_text;
 }
+ 
+// Register blog sidebar
+function custom_blog_sidebar() {
+    register_sidebar(array(
+        'name'          => __('Blog Sidebar', 'storefront-child'),
+        'id'            => 'blog-sidebar',
+        'description'   => __('Sidebar for blog archive and posts', 'storefront-child'),
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title">',
+        'after_title'   => '</h2>',
+    ));
+}
+add_action('widgets_init', 'custom_blog_sidebar');
+
+function custom_storefront_post_meta($post_meta) {
+    if ('post' !== get_post_type()) {
+        return $post_meta;
+    }
+
+    $time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+
+    $time_string = sprintf(
+        $time_string,
+        esc_attr(get_the_date('c')),
+        esc_html(get_the_date('d.m.Y'))
+    );
+
+    $author = sprintf(
+        '<a href="%1$s" class="url fn" rel="author">%2$s</a>',
+        esc_url(get_author_posts_url(get_the_author_meta('ID'))),
+        esc_html(get_the_author())
+    );
+
+    // Build the translated meta string
+    $post_meta = sprintf(
+        'Публикувано на %1$s от %2$s',
+        $time_string,
+        $author
+    );
+
+    return wp_kses_post($post_meta);
+}
+add_filter('storefront_post_meta', 'custom_storefront_post_meta');
  
