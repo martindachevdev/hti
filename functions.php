@@ -1244,24 +1244,37 @@ add_action('woocommerce_product_after_variable_attributes', function($loop, $var
 add_action('init', 'add_editor_woo_caps');
 
 function add_editor_woo_caps() {
+    // Get the editor role
     $role = get_role('editor');
-    $role->add_cap('edit_products');
-    $role->add_cap('edit_published_products');
-    $role->add_cap('edit_others_products');
-    $role->add_cap('read_products');
-
-    // Order capabilities
-    $role->add_cap('edit_shop_orders');
-    $role->add_cap('read_shop_orders');
-    $role->add_cap('edit_shop_order');
-    $role->add_cap('edit_others_shop_orders');
-    $role->add_cap('publish_shop_orders');
-    $role->add_cap('read_private_shop_orders');
-    $role->add_cap('edit_private_shop_orders');
     
-    // General WooCommerce
-    $role->add_cap('read_private_products');
-    $role->add_cap('view_woocommerce_reports');
+    // Check if the role exists before proceeding
+    if (!$role) {
+        return;
+    }
+   // Product capabilities
+   $role->add_cap('edit_products');
+   $role->add_cap('edit_published_products');
+   $role->add_cap('edit_others_products');
+   $role->add_cap('read_products');
+   
+   // Product category capabilities
+   $role->add_cap('manage_product_terms');
+   $role->add_cap('edit_product_terms');
+   $role->add_cap('delete_product_terms');
+   $role->add_cap('assign_product_terms');
+
+   // Order capabilities
+   $role->add_cap('edit_shop_orders');
+   $role->add_cap('read_shop_orders');
+   $role->add_cap('edit_shop_order');
+   $role->add_cap('edit_others_shop_orders');
+   $role->add_cap('publish_shop_orders');
+   $role->add_cap('read_private_shop_orders');
+   $role->add_cap('edit_private_shop_orders');
+   
+   // General WooCommerce
+   $role->add_cap('read_private_products');
+   $role->add_cap('view_woocommerce_reports');
     // $role->add_cap('manage_woocommerce'); 
 }
 
