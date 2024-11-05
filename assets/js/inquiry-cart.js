@@ -212,18 +212,16 @@
                     if ($button.hasClass('disabled')) {
                         return;
                     }
-        
+            
                     self.isProcessing = true;
-                    
-                    // Get form data
-                    const formData = new FormData($form[0]);
-                    formData.append('action', 'woocommerce_add_to_cart_variable_rc');
-                    
                     self.showLoader();
+                    
+                    // Using form serialization consistently
+                    const formData = $form.serialize();
                     
                     $.ajax({
                         url: wc_add_to_cart_params.wc_ajax_url.replace('%%endpoint%%', 'add_to_cart'),
-                        data: $form.serialize() + '&action=woocommerce_add_to_cart_variable_rc',
+                        data: formData + '&action=woocommerce_add_to_cart_variable_rc',
                         type: 'POST',
                         success: function(response) {
                             if (!response) {
@@ -237,7 +235,6 @@
                             
                             // Trigger event
                             $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, $button]);
- 
                         },
                         complete: function() {
                             self.hideLoader();

@@ -1667,3 +1667,18 @@ function custom_storefront_post_meta($post_meta) {
 }
 add_filter('storefront_post_meta', 'custom_storefront_post_meta');
  
+
+add_filter('woocommerce_product_variation_get_name', 'custom_variation_name', 10, 2);
+
+function custom_variation_name($name, $product) {
+    $attributes = $product->get_variation_attributes();
+    $parent_name = get_post($product->get_parent_id())->post_title;
+    
+    // Build custom name format
+    $custom_name = $parent_name;
+    foreach($attributes as $attr => $value) {
+        $custom_name .= ' ' . $value;
+    }
+    
+    return $custom_name;
+}

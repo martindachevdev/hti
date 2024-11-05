@@ -1,12 +1,30 @@
+<?php
+ /**
+ * The template for displaying the homepage.
+ *
+ * This page template will display any functions hooked into the `homepage` action.
+ * By default this includes a variety of product displays and the page content itself. To change the order or toggle these components
+ * use the Homepage Control plugin.
+ * https://wordpress.org/plugins/homepage-control/
+ *
+ * Template name: Test
+ *
+ * @package storefront
+ */
+// Get the latest order
+$orders = wc_get_orders(array(
+    'limit' => 1,
+    'orderby' => 'date',
+    'order' => 'DESC',
+));
 
-<?php 
-if (!defined('ABSPATH')) {
-    exit;
+if (empty($orders)) {
+    wp_die(__('No orders found. Please create at least one order to test the email template.'));
 }
 
-do_action('woocommerce_email_header', $email_heading, $email);
-?>
+$order = $orders[0];
 
+?>
 <p>Получена е ново запитване.</p>
 
 <h2>Информация за клиента</h2>
@@ -67,11 +85,17 @@ do_action('woocommerce_email_header', $email_heading, $email);
         ?>
     </tbody>
 </table>
+<ul>
+    <?php foreach ($order->get_items() as $item): ?>
+        <li>
+            <?php echo esc_html($item->get_name()); ?> 
+            (Количество: <?php echo esc_html($item->get_quantity()); ?>)
+        </li>
+    <?php endforeach; ?>
+</ul>
 
 <p>
     <a class="button button-primary" href="<?php echo admin_url('post.php?post=' . $order->get_id() . '&action=edit'); ?>">
         Преглед на заявката
     </a>
 </p>
-
-<?php do_action('woocommerce_email_footer', $email);

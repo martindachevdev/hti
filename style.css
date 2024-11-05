@@ -658,3 +658,7 @@ a.added_to_cart.wc-forward {
   width: 100%;
   margin-right: 0;
 }
+
+body:not(.page-template-template-fullwidth-php):not(.storefront-full-width-content) .hentry .entry-content .wp-block-columns .wp-block-column:not(:last-child) {
+  margin-right: 10px;
+}
