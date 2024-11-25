@@ -23,7 +23,7 @@ Images License: GNU General Public License v2 or later
  * Add your own custom css below this text.
  */
 
-.site-utils-cont {
+ .site-utils-cont {
   display: flex;
 }
 
@@ -661,4 +661,8 @@ a.added_to_cart.wc-forward {
 
 body:not(.page-template-template-fullwidth-php):not(.storefront-full-width-content) .hentry .entry-content .wp-block-columns .wp-block-column:not(:last-child) {
   margin-right: 10px;
+}
+
+.home-thumbs p, .home-thumbs {
+    text-align: center;
 }
