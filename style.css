@@ -55,7 +55,7 @@ body {
   color: #333;
 }
 
-header#masthead {
+header#masthead, .beforeHeader {
   background: url(assets/img/hti-pattern-red-icons.png), linear-gradient(to top right, #6a0117, #d3012d);
   background-repeat: no-repeat;
   background-position: center;
@@ -663,6 +663,164 @@ body:not(.page-template-template-fullwidth-php):not(.storefront-full-width-conte
   margin-right: 10px;
 }
 
-.home-thumbs p, .home-thumbs {
-    text-align: center;
+.home-thumbs p,
+.home-thumbs {
+  text-align: center;
+}
+
+
+/* new */
+
+@media (min-width: 768px) {
+
+.beforeHeader {
+    position: absolute;
+    height: 550px;
+    z-index: 999;
+    width: 100%;
+    z-index: 0;
+}
+  .home .beforeHeader:after {
+    display: block;
+    height: 102px;
+    width: 100%;
+    content: "";
+    background: #fff;
+    transform: skew(0, -3deg);
+    transform-origin: top right;
+    z-index: -1;
+    margin-top: 250px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .home div#content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .home header#masthead {
+    background: transparent;
+    border: none;
+    margin-bottom: 30px;
+  }
+
+  .main-navigation ul.menu>li>a,
+  .main-navigation ul.nav-menu>li>a {
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+
+  .wp-block-essential-blocks-infobox {
+    height: 100%;
+  }
+
+  .eb-parent-wrapper {
+    height: 100%;
+  }
+
+
+  .home div#content {
+    /* margin-top: -400px; */
+  }
+
+  .home header.entry-header {
+    color: white;
+  }
+
+  .home h1.entry-title {
+    color: #fff;
+    font-weight: 500;
+  }
+
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper {
+  background: white;
+  padding: 0;
+}
+
+.eb-parent-wrapper {
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.095), 0 6px 6px rgba(0, 0, 0, 0.115);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper .infobox-wrapper-inner {
+  display: block;
+}
+
+.eb-infobox-wrapper.eb-infobox-wb8qx .icon-img-wrapper {
+  margin-top: 0;
+}
+
+.eb-parent-wrapper div.eb-infobox-wrapper .infobox-wrapper-inner img {
+  border-radius: 0;
+  width: 100%;
+  height: 240px;
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper .icon-img-wrapper {
+  margin-top: 0;
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper .contents-wrapper {
+  padding: 10px 20px;
+  text-align: left;
+}
+
+.eb-parent-wrapper .title {
+  font-weight: 600;
+  color: #333;
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper .description {
+  font-size: 18px;
+  padding-bottom: 15px;
+  padding-top: 0;
+  text-align: left;
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper .title {
+  font-size: 28px;
+}
+
+
+.eb-parent-wrapper .eb-infobox-wrapper .eb-button-anchor.infobox-btn {
+  background-color: transparent;
+  color: #cd143b;
+  padding-left: 0;
+  padding-top: 0;
+  text-decoration: none;
+  font-weight: 600;
+  padding-bottom: 10px;
+  font-size: 18px;
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper .eb-button-inner-wrapper {
+  justify-content: flex-start;
+}
+
+.eb-parent-wrapper .eb-infobox-wrapper .eb-button-anchor.infobox-btn:hover {
+  color: #cd143b;
+  text-decoration: underline;
+}
+
+.hentry .entry-content .wp-block-essential-blocks-infobox > a {
+    text-decoration: none;
+    height: 100%;
+}
+
+.wp-block-essential-blocks-infobox > a:hover .infobox-wrapper-inner {
+    transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    filter: brightness(0.75);
+}
+ 
+
+.wp-block-essential-blocks-infobox > a:hover .eb-parent-wrapper {
+    transition: all 0.3s;
+    box-shadow: 0 19px 38px rgba(0,0,0,0.15),0 15px 12px rgba(0,0,0,0.11);
 }

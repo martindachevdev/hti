@@ -20,7 +20,12 @@
 
 <body <?php body_class(); ?>>
 
-<?php wp_body_open(); ?>
+<?php
+		if(is_front_page()){
+		echo '<div class="beforeHeader"></div>';
+	}
+	
+	wp_body_open(); ?>
 
 <?php do_action( 'storefront_before_site' ); ?>
 
