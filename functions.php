@@ -1741,3 +1741,41 @@ function storefront_paging_nav() {
     );
     the_posts_pagination($args);
 }
+
+function is_blog() {
+    return (is_archive() || is_author() || is_category()   || is_single() || is_tag()) && !is_page();
+}
+
+function custom_storefront_layout_classes($classes) {
+    if (is_page() && 
+        !is_woocommerce() && 
+        !is_shop() && 
+        !is_product_category() && 
+        !is_product_tag() && 
+        !is_product() && 
+        !is_cart() && 
+        !is_checkout() && 
+        !is_account_page() && 
+        !is_blog()) {
+            $classes = array_diff($classes, array('left-sidebar', 'right-sidebar'));
+            $classes[] = 'full-width';
+    }
+    return $classes;
+}
+add_filter('body_class', 'custom_storefront_layout_classes', 999);
+
+function manage_storefront_sidebar() {
+    if (is_page() && 
+        !is_woocommerce() && 
+        !is_shop() && 
+        !is_product_category() && 
+        !is_product_tag() && 
+        !is_product() && 
+        !is_cart() && 
+        !is_checkout() && 
+        !is_account_page() && 
+        !is_blog()) {
+            remove_action('storefront_sidebar', 'storefront_get_sidebar', 10);
+    }
+}
+add_action('wp', 'manage_storefront_sidebar');

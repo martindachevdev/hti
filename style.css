@@ -655,7 +655,7 @@ a.added_to_cart.wc-forward {
   margin-left: 0;
 }
 
-.page-template-default.right-sidebar .content-area {
+.full-width .content-area {
   width: 100%;
   margin-right: 0;
 }

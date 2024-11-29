@@ -5,12 +5,6 @@
  * @package storefront
  */
 
-if ( ! is_active_sidebar( 'sidebar-1' ) ) {
-	return;
-}
-if(is_page()){
-return false;
-}
 ?>
 
 <div id="secondary" class="widget-area" role="complementary">
