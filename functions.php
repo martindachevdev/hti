@@ -931,19 +931,6 @@ function custom_show_user_columns($value, $column_name, $user_id)
 }
 add_filter('manage_users_custom_column', 'custom_show_user_columns', 10, 3);
 
-
-add_filter('gettext', 'translate_registration_password_text', 20, 3);
-
-function translate_registration_password_text($translated_text, $text, $domain)
-{
-    if ($domain === 'woocommerce') {
-        if ($text === 'A link to set a new password will be sent to your email address.') {
-            return 'След успешна регистрация, връзка за задаване на парола ще бъде изпратена на посочения имейл адрес.';
-        }
-    }
-    return $translated_text;
-}
-
 function delete_all_products()
 {
     $args = array(
@@ -1589,40 +1576,6 @@ function after_add_to_cart_quantity_unit() {
     }
 }
 
-  
-// Optional: Add custom translations programmatically
-add_filter('gettext', 'custom_storefront_translations', 20, 3);
-function custom_storefront_translations($translated_text, $text, $domain) {
-        switch ($text) {
-            case 'Next':
-                return 'Следваща';
-            case 'Search Results for:':
-                return 'Резултати от търсене за:';
-            case 'Add to cart':
-                return 'Добави към запитване';
-            case 'View your shopping cart':
-                return 'Преглед на запитване';
-            // Add more translations as needed
-        }
- 
-    return $translated_text;
-}
-
-add_filter('woocommerce_order_number_formatted', 'custom_order_number_format', 20, 2);
- 
-
-
- 
-add_filter('gettext', 'replace_order_text_patterns', 20, 3);
-function replace_order_text_patterns($translated_text, $text, $domain) {
- 
-        // Replace simple order number format
-        $translated_text = str_replace('Поръчка №', 'Запитване №', $translated_text);
- 
-    
-    return $translated_text;
-}
- 
 // Register blog sidebar
 function custom_blog_sidebar() {
     register_sidebar(array(
@@ -1681,4 +1634,110 @@ function custom_variation_name($name, $product) {
     }
     
     return $custom_name;
+}
+function storefront_post_meta() {
+    if ( 'post' !== get_post_type() ) {
+        return;
+    }
+
+    // Posted on.
+    $time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
+
+    if ( get_the_time( 'U' ) !== get_the_modified_time( 'U' ) ) {
+        $time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+    }
+
+    $time_string = sprintf(
+        $time_string,
+        esc_attr( get_the_date( 'c' ) ),
+        esc_html( get_the_date() ),
+        esc_attr( get_the_modified_date( 'c' ) ),
+        esc_html( get_the_modified_date() )
+    );
+
+    $output_time_string = sprintf( '<a href="%1$s" rel="bookmark">%2$s</a>', esc_url( get_permalink() ), $time_string );
+
+    $posted_on = '
+        <span class="posted-on">' .
+        /* translators: %s: post date */
+        sprintf( __( 'Публикувано на %s', 'storefront' ), $output_time_string ) .
+        '</span>';
+
+    // Author.
+    $author = '';
+
+    // Comments.
+    $comments = '';
+
+    if ( ! post_password_required() && ( comments_open() || 0 !== intval( get_comments_number() ) ) ) {
+        $comments_number = get_comments_number_text( __( 'Leave a comment', 'storefront' ), __( '1 Comment', 'storefront' ), __( '% Comments', 'storefront' ) );
+
+        $comments = sprintf(
+            '<span class="post-comments">&mdash; <a href="%1$s">%2$s</a></span>',
+            esc_url( get_comments_link() ),
+            $comments_number
+        );
+    }
+
+    echo wp_kses(
+        sprintf( '%1$s %2$s %3$s', $posted_on, $author, $comments ),
+        array(
+            'span' => array(
+                'class' => array(),
+            ),
+            'a'    => array(
+                'href'  => array(),
+                'title' => array(),
+                'rel'   => array(),
+            ),
+            'time' => array(
+                'datetime' => array(),
+                'class'    => array(),
+            ),
+        )
+    );
+}
+
+
+function unified_theme_translations($translated_text, $text, $domain) {
+    $translations = array(
+        // General translations
+        'Posted on' => 'Публикувано на',
+        'by' => 'от',
+        'Posted in' => 'Публикувано в',
+        'Tagged' => 'Етикети',
+        'Previous' => 'Предишна',
+        'Next' => 'Следваща',
+        'Next post' => 'Следваща',
+        'Previous post' => 'Предишна',
+        'Search Results for: %s' => 'Резултати от търсене за: %s',
+        'Search Results for:' => 'Резултати от търсене за:',
+
+        // WooCommerce specific
+        'Add to cart' => 'Добави към запитване',
+        'View your shopping cart' => 'Преглед на запитване',
+        'A link to set a new password will be sent to your email address.' => 'След успешна регистрация, връзка за задаване на парола ще бъде изпратена на посочения имейл адрес.',
+    );
+
+    // Check if the text exists in our translations array
+    if (isset($translations[$text])) {
+        return $translations[$text];
+    }
+
+    // Handle order number text replacement
+    $translated_text = str_replace('Поръчка №', 'Запитване №', $translated_text);
+
+    return $translated_text;
+}
+add_filter('gettext', 'unified_theme_translations', 999, 3);
+
+// Pagination function remains separate as it's a different type of functionality
+function storefront_paging_nav() {
+    global $wp_query;
+    $args = array(
+        'type'      => 'list',
+        'next_text' => _x('Следваща', 'Next post', 'storefront'),
+        'prev_text' => _x('Предишна', 'Previous post', 'storefront'),
+    );
+    the_posts_pagination($args);
 }
