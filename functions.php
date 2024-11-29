@@ -15,7 +15,7 @@
  * Dequeue the Storefront Parent theme core CSS
  */
 
-require 'inc/product-importer.php';
+ 
 require 'inc/woo-system-1.php';
 require 'inc/woo-system-2.php';
 
