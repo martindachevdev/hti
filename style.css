@@ -831,3 +831,46 @@ body:not(.page-template-template-fullwidth-php):not(.storefront-full-width-conte
     line-height: 1.4;
 }
  
+
+.brands.all-brands .alignleft{
+ float: none;
+ margin-right: 0 !important;
+}
+ 
+
+.brands.all-brands {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.flexer {
+    display: flex;
+    gap: 20px;
+}
+
+.flexer img {
+  width: 125px !important; 
+}
+
+.two {
+    flex: 1;
+}
+
+.single-product div.product table.variations select {
+    max-width: 100%;
+}
+
+a.reset_variations {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    display: block;
+}
+
+.products .type-product img {
+    height: 140px;
+    width: auto;
+}

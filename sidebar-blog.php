@@ -19,27 +19,6 @@
                 ?>
             </ul>
         </section>
-        <section class="widget widget_recent_entries">
-            <h2 class="widget-title"><?php _e('Скорошни публикации', 'storefront-child'); ?></h2>
-            <ul>
-                <?php
-                $recent_posts = wp_get_recent_posts(array(
-                    'numberposts' => 5,
-                    'post_status' => 'publish'
-                ));
-                
-                foreach ($recent_posts as $recent) {
-                    printf(
-                        '<li><a href="%1$s">%2$s</a></li>',
-                        esc_url(get_permalink($recent['ID'])),
-                        esc_html($recent['post_title'])
-                    );
-                }
-                ?>
-            </ul>
-        </section>
-        
-    
     <?php endif; ?>
     
     <?php do_action('after_blog_sidebar'); ?>

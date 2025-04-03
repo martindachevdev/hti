@@ -193,7 +193,18 @@ function storefront_site_branding()
         <?php storefront_site_title_or_logo(); ?>
         <div class="site-utils">
             <div class="site-utils-cont">
-                <a href="/shop" class="txt">HTI ONLINE+</button>
+<a href="/shop" class="txt" style="
+    line-height: 10px;
+"><span style="
+    margin-bottom: 5px;
+    display: block;
+    line-height: 1;
+    margin-top: 6px;
+">HTI ONLINE+</span>
+                    <small style="
+    line-height: 1;
+">за запитвания и поръчки</small></a>
+<!--                 <a href="/shop" class="txt">HTI ONLINE+</a> -->
                     <a href="#" id="site-search-toggle" class="icon">
                         <svg viewBox="0 0 24 24" width="24" height="24">
                             <g>
@@ -1240,11 +1251,17 @@ function add_editor_woo_caps() {
     }
    $role->add_cap('manage_options');
    // Product capabilities
-   $role->add_cap('edit_products');
-   $role->add_cap('edit_published_products');
-   $role->add_cap('edit_others_products');
-   $role->add_cap('read_products');
-   
+$role->add_cap('edit_products');
+$role->add_cap('delete_products');
+$role->add_cap('delete_published_products');
+$role->add_cap('delete_others_products');
+$role->add_cap('delete_private_products');     // Added
+$role->add_cap('edit_published_products');
+$role->add_cap('edit_others_products');
+$role->add_cap('edit_private_products');       // Added
+$role->add_cap('read_products');
+$role->add_cap('publish_products');            // Added
+$role->add_cap('manage_woocommerce');    
    // Product category capabilities
    $role->add_cap('manage_product_terms');
    $role->add_cap('edit_product_terms');
@@ -1780,3 +1797,210 @@ function manage_storefront_sidebar() {
     }
 }
 add_action('wp', 'manage_storefront_sidebar');
+
+// Add bulk action option
+function add_export_orders_bulk_action($bulk_actions) {
+    $bulk_actions['export_selected_orders'] = __('Export Selected', 'woocommerce');
+    return $bulk_actions;
+}
+add_filter('bulk_actions-woocommerce_page_wc-orders', 'add_export_orders_bulk_action');
+
+// Handle bulk action
+function handle_export_orders_bulk_action($redirect_to, $doaction, $ids) {
+    if ($doaction !== 'export_selected_orders') {
+        return $redirect_to;
+    }
+    
+    export_selected_orders($ids);
+    return $redirect_to;
+}
+add_filter('handle_bulk_actions-woocommerce_page_wc-orders', 'handle_export_orders_bulk_action', 10, 3);
+
+// Export function
+function export_selected_orders($order_ids) {
+    if (!current_user_can('manage_woocommerce')) {
+        wp_die('Unauthorized access');
+    }
+
+    $orders = array_map('wc_get_order', $order_ids);
+    
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="orders_export_' . date('Y-m-d') . '.csv"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    
+    $fp = fopen('php://output', 'wb');
+    fputs($fp, chr(0xEF) . chr(0xBB) . chr(0xBF));
+    
+    $headers = array(
+        '№',
+        'Тип потребител', 
+        'Име', 
+        'ЕГН/ЕИК', 
+        'Телефон', 
+        'Имейл', 
+        'Адрес', 
+        'Град', 
+        'Пощенски код',
+        'Съгласие за имейл',
+        'Съгласие за телефон',
+        'Продукти'
+    );
+    fputcsv($fp, $headers);
+
+    foreach ($orders as $order) {
+        if (!$order) continue;
+        
+        $products = [];
+        foreach ($order->get_items() as $item) {
+            $product = $item->get_product();
+            $unit = get_post_meta($item->get_variation_id(), 'attribute_measure_unit', true);
+            $products[] = $item->get_quantity() . ' x ' . $item->get_name() . ' ' . $unit . ' ' . ($product && $product->get_sku() ? '('.$product->get_sku().')' : '');
+        }
+
+        $row = array(
+            $order->get_id(),
+            $order->get_meta('entity_type') === 'person' ? 'Физическо лице' : 'Юридическо лице',
+            $order->get_meta('entity_type') === 'person' 
+                ? $order->get_meta('first_name') . ' ' . $order->get_meta('last_name')
+                : $order->get_meta('company_name'),
+            '="' . esc_html($order->get_meta('egn_eik')) . '"',  
+            '="' . esc_html($order->get_meta('phone')) . '"',   
+            $order->get_billing_email(),
+            $order->get_billing_address_1(),
+            $order->get_billing_city(),
+            $order->get_billing_postcode(),
+            $order->get_meta('email_consent') ? 'Да' : 'Не',
+            $order->get_meta('phone_consent') ? 'Да' : 'Не',
+            implode("\n", $products)
+        );
+        
+        fputcsv($fp, $row);
+    }
+
+    fclose($fp);
+    exit();
+}
+
+// Custom function to display description for both simple and variable products
+function custom_product_description() {
+    global $product;
+    
+    if ($product->get_description() || $product->get_short_description()) {
+        echo '<div class="product-description-wrapper">';
+        
+        // Display short description if available
+        if ($product->get_description()) {
+            echo '<div class="short-description">';
+            echo wp_kses_post($product->get_description());
+            echo '</div>';
+        }
+        
+        echo '</div>';
+    }
+}
+
+// Remove all default actions from single product summary
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_title', 5);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_price', 10);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
+remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_sharing', 50);
+
+// Add back elements in desired order
+add_action('woocommerce_single_product_summary', 'woocommerce_template_single_title', 5);
+add_action('woocommerce_single_product_summary', 'custom_product_description', 6);  // Description right after title
+add_action('woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10);
+add_action('woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
+add_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40);
+add_action('woocommerce_single_product_summary', 'woocommerce_template_single_sharing', 50);
+
+ 
+/**
+ * Create a custom editor role with specific capabilities
+ * Add this code to your theme's functions.php file or in a custom plugin
+ */
+
+function create_custom_editor_role() {
+    // Remove the role first to prevent capability duplicates
+    remove_role('custom_editor');
+    
+    // Add the new custom editor role
+    add_role(
+        'custom_editor',
+        'Custom Editor',
+        array(
+            // Core WordPress capabilities
+            'read' => true,
+            'edit_posts' => true,
+            'edit_published_posts' => true,
+            'publish_posts' => true,
+            'delete_posts' => true,
+            'delete_published_posts' => true,
+            
+            // Page capabilities
+            'edit_pages' => false,
+            'edit_published_pages' => false,
+            'publish_pages' => false,
+            'delete_pages' => false,
+            'delete_published_pages' => false,
+            
+            // Media capabilities
+            'upload_files' => true,
+            'edit_files' => true,
+            
+            // Category/tag capabilities
+            'manage_categories' => true,
+            'edit_categories' => true,
+            'delete_categories' => true,
+            'assign_categories' => true,
+            'manage_tags' => true,
+            
+            // Comment capabilities
+            'moderate_comments' => true,
+            'edit_comments' => true,
+            
+            // Additional capabilities
+            'edit_others_posts' => true,
+            'edit_others_pages' => true,
+            'edit_private_posts' => true,
+            'edit_private_pages' => true,
+            'read_private_posts' => true,
+            'read_private_pages' => true,
+            
+            // Prevent certain administrative capabilities
+            'switch_themes' => false,
+            'edit_themes' => false,
+            'activate_plugins' => false,
+            'edit_plugins' => false,
+            'edit_users' => false,
+            'create_users' => false,
+            'delete_users' => false,
+            'manage_options' => false,
+        )
+    );
+}
+
+// Hook to run when the plugin is activated or when adding to functions.php
+add_action('init', 'create_custom_editor_role');
+
+/**
+ * Optional: Remove the role when plugin is deactivated
+ */
+function remove_custom_editor_role() {
+    remove_role('custom_editor');
+}
+register_deactivation_hook(__FILE__, 'remove_custom_editor_role');
+
+/**
+ * Optional: Add additional capabilities to the role after creation
+ */
+function add_additional_capabilities() {
+    $role = get_role('custom_editor');
+    
+    // Add any additional capabilities here
+    // $role->add_cap('custom_capability', true);
+}
+add_action('init', 'add_additional_capabilities', 11);
